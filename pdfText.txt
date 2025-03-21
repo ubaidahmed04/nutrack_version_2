@@ -1,0 +1,169 @@
+//   const downloadPDF = async () => {
+//     pdfRef.current.classList.remove('hidden');
+//     headerRef.current.classList.remove('hidden');
+
+//     const input = pdfRef.current;
+//     const headerValues = headerRef.current;
+
+//     const headerCanvas = await html2canvas(headerValues);
+//     const headerData = headerCanvas.toDataURL("image/png");
+
+//     const pdf = new jsPDF("p", "mm", "a4");
+//     const imgWidth = 210; // A4 width in mm
+//     const pageHeight = 297; // A4 height in mm
+//     const headerHeight = 20; // Height of the header
+//     const footerHeight = 16; // Height of the footer
+//     const contentHeight = pageHeight - headerHeight - footerHeight;
+
+//     const rows = Array.from(input.querySelectorAll("tr"));
+//     const totalRows = rows.length;
+//     const rowsPerPage = 30; // Adjust this if needed
+//     const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+//     // Get the second row to use as a header row on each page
+//     const secondRowClone = rows[1].cloneNode(true); 
+//     secondRowClone.style.height = "78px"; 
+//     secondRowClone.style.fontSize = "24px";
+//     secondRowClone.style.backgroundColor = "#CCCCCC";
+//     secondRowClone.style.boxSizing = "border-box";
+
+//     for (let i = 0; i < totalPages; i++) {
+//         const startRow = i * rowsPerPage;
+//         const endRow = Math.min(startRow + rowsPerPage, totalRows);
+
+//         // Create a new table for this page
+//         const tableChunk = document.createElement("table");
+//         tableChunk.style.width = "100%";
+//         tableChunk.style.tableLayout = "fixed"; // Ensure consistent layout
+//         tableChunk.style.boxSizing = "border-box"; // Ensures consistent padding/margins
+
+//         // Append the second row clone as the header row for each page
+//         tableChunk.appendChild(secondRowClone.cloneNode(true));
+
+//         // Add rows for the current page
+//         rows.slice(startRow, endRow).forEach((row) => {
+//             const rowClone = row.cloneNode(true);
+//             rowClone.style.height = "78px"; 
+//             rowClone.style.fontSize = "24px";
+//             rowClone.style.boxSizing = "border-box";
+//             tableChunk.appendChild(rowClone);
+//         });
+
+//         document.body.appendChild(tableChunk);
+//         const chunkCanvas = await html2canvas(tableChunk, { scale: 2 });
+//         document.body.removeChild(tableChunk);
+
+//         const imgHeight = (chunkCanvas.height * imgWidth) / chunkCanvas.width;
+
+//         // Add header to every page
+//         pdf.addImage(headerData, "PNG", 0, 0, imgWidth, headerHeight);
+
+//         // Start the content immediately after the header
+//         const contentY = headerHeight; 
+//         pdf.addImage(chunkCanvas.toDataURL("image/png"), "PNG", 0, contentY, imgWidth, imgHeight);
+
+//         // Page number
+//         pdf.setFontSize(8);
+//         const pageNumText = `Page ${i + 1} of ${totalPages}`;
+//         const pageNumTextWidth = pdf.getTextWidth(pageNumText);
+//         pdf.text(pageNumText, imgWidth - pageNumTextWidth - 4, pageHeight - 5);
+//         pdf.text(`Printed On: ${new Date().toLocaleDateString("en-GB")} ${new Date().toLocaleTimeString()}`,
+//             10,
+//             pageHeight - 5
+//         );
+
+//         // Add a new page if not the last page
+//         if (i < totalPages - 1) {
+//             pdf.addPage();
+//         }
+//     }
+
+//     // Save the PDF
+//     pdf.save(`${singleEmployeeAttendance?.firstname}.pdf`);
+//     pdfRef.current.classList.add('hidden');
+//     headerRef.current.classList.add('hidden');
+// };
+
+// Fine Work
+// const downloadPDF = async () => {
+//   // pdfRef.current.classList.remove("hidden");
+//   // headerRef.current.classList.remove("hidden");
+
+//   const input = pdfRef.current;
+//   const headerValues = headerRef.current;
+
+//   const headerCanvas = await html2canvas(headerValues, { scale: 1 }); // Reduce scale
+//   const headerData = headerCanvas.toDataURL("image/jpeg", 0.6); // Compress header image with JPEG and quality 0.6
+
+//   const pdf = new jsPDF("p", "mm", "a4");
+//   const imgWidth = 210;
+//   const pageHeight = 297;
+//   const headerHeight = 20;
+//   const footerHeight = 16;
+//   const contentHeight = pageHeight - headerHeight - footerHeight;
+
+//   const rows = Array.from(input.querySelectorAll("tr"));
+//   const totalRows = rows.length;
+//   const rowsPerPage = 30;
+//   const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+//   const applyHeaderStyle = (row) => {
+//       row.style.height = "78px";
+//       row.style.fontSize = "24px";
+//       row.style.backgroundColor = "#CCCCCC";
+//       row.style.boxSizing = "border-box";
+//   };
+
+//   applyHeaderStyle(rows[0]);
+
+//   const secondRowClone = rows[0].cloneNode(true);
+//   applyHeaderStyle(secondRowClone);
+
+//   for (let i = 0; i < totalPages; i++) {
+//       const startRow = i * rowsPerPage;
+//       const endRow = Math.min(startRow + rowsPerPage, totalRows);
+
+//       const tableChunk = document.createElement("table");
+//       tableChunk.style.width = "100%";
+//       tableChunk.style.tableLayout = "fixed";
+//       tableChunk.style.boxSizing = "border-box";
+
+//       if (i > 0) {
+//           tableChunk.appendChild(secondRowClone.cloneNode(true));
+//       }
+
+//       rows.slice(startRow, endRow).forEach((row) => {
+//           const rowClone = row.cloneNode(true);
+//           rowClone.style.height = "78px";
+//           rowClone.style.fontSize = "24px";
+//           rowClone.style.boxSizing = "border-box";
+//           tableChunk.appendChild(rowClone);
+//       });
+
+//       document.body.appendChild(tableChunk);
+//       const chunkCanvas = await html2canvas(tableChunk, { scale: 1 }); // Reduce scale to lower image size
+//       document.body.removeChild(tableChunk);
+
+//       const imgHeight = (chunkCanvas.height * imgWidth) / chunkCanvas.width;
+//       const chunkData = chunkCanvas.toDataURL("image/jpeg", 0.6); // Compress image with JPEG format and quality 0.6
+
+//       pdf.addImage(headerData, "JPEG", 0, 0, imgWidth, headerHeight);
+//       const contentY = headerHeight;
+//       pdf.addImage(chunkData, "JPEG", 0, contentY, imgWidth, imgHeight);
+
+//       pdf.setFontSize(8);
+//       const pageNumText = `Page ${i + 1} of ${totalPages}`;
+//       const pageNumTextWidth = pdf.getTextWidth(pageNumText);
+//       pdf.text(pageNumText, imgWidth - pageNumTextWidth - 4, pageHeight - 5);
+//       pdf.text(`Printed On: ${new Date().toLocaleDateString("en-GB")} ${new Date().toLocaleTimeString()}`,10,pageHeight - 5);
+
+//       if (i < totalPages - 1) {
+//           pdf.addPage();
+//       }
+//   }
+
+//   // Save the PDF
+//   pdf.save(`${singleEmployeeAttendance.length == 1 ? singleEmployeeAttendance[0].firstname : 'All Employee'}.pdf`);
+//   // pdfRef.current.classList.add("hidden");
+//   // headerRef.current.classList.add("hidden");
+// };

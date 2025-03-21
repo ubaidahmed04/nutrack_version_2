@@ -1,0 +1,4 @@
+body, html {
+  position: relative;
+  z-index: 0;
+}
