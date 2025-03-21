@@ -100,11 +100,11 @@ const AttendanceTable = ({ empAttendance }) => {
   }
   return (
     <>
-      <div className="h-[calc(100vh-50px)]">
+      <div className="h-full ">
         <div className="w-full flex items-center justify-center">
           <p className="flex-1 hidden md:block"></p>
           <h2 className="md:flex-1 p-1 text-center font-semibold text-sm md:text-2xl my-5">
-            Today Attendance
+            Today Attendance  
           </h2>
           <div className="flex-1 flex">
             <span className="w-fit border-2 border-black rounded-md flex-col items-center flex md:flex-row">

@@ -99,13 +99,13 @@ const SingleEmployee = ({name}) => {
     pdf.save(`${name == "All" ? "All" : name}.pdf`)
   };
   const { toDate, fromDate } = useSelector((state) => state.setDates);
-  console.log(toDate);
-  console.log(fromDate);
+  // console.log(toDate);
+  // console.log(fromDate);
   return (
     <>
       <div className=" -z-10">
-        <div className="h-[100px]">
-          <div className="flex w-full  items-center py-3">
+        <div className="h-full">
+          <div className="flex w-full  items-center ">
             <h1 className="flex  w-full justify-center  text-lg items-center  sm:text-xl lg:text-2xl font-bold text-start md:py-2 md:mb-0">
               Employee Attendance Sheet
             </h1>
@@ -176,11 +176,11 @@ const SingleEmployee = ({name}) => {
                   </thead>
                   {singleEmployeeAttendance && (
                     <tbody>
-                      {Object.keys(singleEmployeeAttendance)?.map((dept) => (
-                        <>
-                          {singleEmployeeAttendance[dept]?.map((employee) => (
+                      {Object.keys(singleEmployeeAttendance)?.map((dept ,index) => (
+                        <React.Fragment key={index}>
+                          {singleEmployeeAttendance[dept]?.map((employee, index) => (
                             <>
-                              <tr className="">
+                              <tr className="" key={index}>
                                 <td className="flex justify-start">
                                   <p className="pb-4 px-6 border-b font-bold text-[18px] capitalize bg-gray-300 text-black rounded-r-full text-center">
                                     {employee.firstname}
@@ -271,7 +271,7 @@ const SingleEmployee = ({name}) => {
                               })()}
                             </>
                           ))}
-                        </>
+                        </React.Fragment>
                       ))}
                     </tbody>
                   )}

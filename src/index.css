@@ -2,10 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 @import 'react-toastify/dist/ReactToastify.css';
+/*  custom scrollbar */
 
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
 
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
 
-::-webkit-scrollbar {
+  ::-webkit-scrollbar-thumb {
+    background: rgb(28, 29, 29)685;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #5C6685;
+  }
+  /* ::-webkit-scrollbar-thumb:hover {
+    background: #5C6685;
+  } */
+/*  custom scrollbar */
+/* ::-webkit-scrollbar {
     width: 3px;
     height: 3px;
     background: rgba(0, 0, 0, 0.1);
@@ -21,4 +39,4 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-}
+} */

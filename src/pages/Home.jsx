@@ -10,7 +10,7 @@ const Home = () => {
     const {allEmployee} = useSelector((state) => state.employees || {})
 
     const {users} = useSelector((state) => state.user || {})
-    console.log(users)
+    // console.log(users)
     const fetchAttendance = async() =>{
         try {
             // const response = await getRequest('getAllUser?departmentcode=5')

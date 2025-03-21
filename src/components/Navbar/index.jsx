@@ -162,8 +162,8 @@ const Navbar = ({ setName }) => {
             ))}
           </div>
           <span
-            className="flex items-center gap-3 px-4 py-2  rounded-xl   w-full  text-black font-semibold  hover:bg-[#636D8E] hover:text-white hover:shadow-md"
-            onClick={() => setIsOpen(false)} 
+            className="flex items-center gap-3 px-4 py-2  rounded-xl   w-full  text-black font-semibold  hover:bg-[#636D8E] hover:text-white hover:shadow-md hover:cursor-pointer "
+            // onClick={() => setIsOpen(false)}  close on selected this tab
             >
             <FolderIcon className="w-5 h-5 !space-y-2 my-2" />
             <ModalComponents titles="Attendance Sheet" isOpen={isOpen} setIsOpen={setIsOpen} message="responsive" setName={setName} />

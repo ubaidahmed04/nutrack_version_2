@@ -30,7 +30,7 @@ function App() {
           <Route path="/" element={<Layout setName={setName}/>}>
             <Route path='/' element={users ? <Home /> : <Navigate to='/login' />}/>
             <Route path='/AttendanceSheet' element={users ? <SingleEmployee name={name}/> : <Navigate to='/login' />}/>
-            {/* <Route path='/EmployeeSummary/:id' element={users ? <EmpSummary/> : <Navigate to='/EmployeeSummary' />}/>
+            <Route path='/EmployeeSummary/:id' element={users ? <EmpSummary/> : <Navigate to='/EmployeeSummary' />}/>
             <Route path='/allUser' element={users ? <AllUser /> : <Navigate to='/login' />}/>
             <Route path='/employee' element={users ? <Employee /> : <Navigate to='/login' />}/>
             <Route path='/markatt' element={users ? <MarkAttendance /> : <Navigate to='/login' />}/>
@@ -38,7 +38,7 @@ function App() {
             <Route path='/worksheet' element={users ? <WorkSheet /> : <Navigate to='/login' />}/>
             <Route path='/holiday' element={users ? <Holiday /> : <Navigate to='/login' />}/>
             <Route path='/sickleave' element={users ? <SickLeaves /> : <Navigate to='/login' />}/>
-            <Route path='/annualleave' element={users ? <AnnualLeaves /> : <Navigate to='/login' />}/> */}
+            <Route path='/annualleave' element={users ? <AnnualLeaves /> : <Navigate to='/login' />}/>
           </Route>
         </Routes>
       </BrowserRouter>

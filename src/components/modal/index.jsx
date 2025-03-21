@@ -37,14 +37,17 @@ const ModalComponents = ({ titles, emloyeeList, message, setIsOpen, isOpen, setN
         dispatch(fetchingEmployeeStart());
         let route;
         let obj;
-        if (users?.data?.role == "HR" && selectedDepartment == "All") {
-          route = users?.data?.role == "HR" && selectedDepartment == "All" && "getAllEmployeesAttendance"
+        // remove data.role
+        if (users?.role == "HR" && selectedDepartment == "All") {
+         // remove data.role
+          route = users?.role == "HR" && selectedDepartment == "All" && "getAllEmployeesAttendance"
           obj = {
             todate: toDate,
             fromdate: fromDate,
           };
         } else if (selectedEmployee === "All") {
-          route = `${users?.data?.role == "HR" ?
+          // remove data.role
+          route = `${users?.role == "HR" ?
             `${selectedDepartment ? `getAllEmployeesAttendance?departmentcode=${selectedDepartment}` : "getAllEmployeesAttendance"}` :
             "getAllEmployeesAttendance?departmentcode=5"}`;
           obj = {
@@ -67,10 +70,8 @@ const ModalComponents = ({ titles, emloyeeList, message, setIsOpen, isOpen, setN
           dispatch(reduxFromDate(fromDate));
           setToDate("");
           setFromDate("");
-          
-          navigate(`/${url}`);
-          console.log('navigate ka baad ka url', url)  // Pehle navigate karwao 
-       
+          navigate(`/${url}`); 
+          setIsOpen(!isOpen)      
           try {
              const response = await postRequest(route, obj);
              console.log(response);
@@ -95,7 +96,7 @@ const ModalComponents = ({ titles, emloyeeList, message, setIsOpen, isOpen, setN
           setToDate("");
           setFromDate("");
           navigate(`/${url}`);
-          // setIsOpen(!isOpen)
+          setIsOpen(!isOpen)
           const response = await postRequest(route, dates);
           dispatch(fetchingEmployerSuccess(response));
         }
