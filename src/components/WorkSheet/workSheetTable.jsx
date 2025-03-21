@@ -13,7 +13,7 @@ const WorkSheetTable = () => {
   return (
     <div className="font-[sans-serif] overflow-x-auto">
   <table className="min-w-full bg-white">
-    <thead className="bg-[#636D8E]  whitespace-nowrap">
+    <thead className="bg-primaryPurple  whitespace-nowrap">
       <tr>
         {
           T_Head.map((item,index)=>(

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import logo from '../../assets/nutrack.png';
+import logo from '../../assets/nutrack2.png';
 import { Link, NavLink } from 'react-router-dom';
 import { Drawer, } from 'antd';
 import ModalComponents from '../modal';
@@ -114,7 +114,7 @@ const Navbar = ({ setName }) => {
           <Link to="/">
             <img src={logo} alt="" width={150} height={150} />
           </Link>
-          {users && users.role === "HR" && <span className='font-semibold flex gap-x-2 text-2xl bg-orange-400 rounded-md text-black px-3'>Role:<span className='text-2xl'>{users.role}</span></span>}
+          {users && users.role === "HR" && <span className='font-semibold flex gap-x-2 text-2xl bg-sunsetOrange rounded-md text-black px-3'>Role:<span className='text-2xl'>{users.role}</span></span>}
 
         </div>
         <div className="block pr-4 ">
@@ -150,8 +150,8 @@ const Navbar = ({ setName }) => {
                 to={item.link}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-4 py-2 rounded-xl  ${!isActive
-                    ? " w-full  text-black font-semibold  hover:bg-[#636D8E] hover:text-white hover:shadow-md"
-                    : "bg-orange-400 font-bold text-white underline hover:text-black shadow-md"
+                    ? " w-full  text-black font-semibold  hover:bg-primaryPurple hover:text-white hover:shadow-md"
+                    : "bg-sunsetOrange font-bold text-white underline hover:text-black shadow-md"
                   }`
                 }
                 onClick={() => setIsOpen(false)} // Close drawer on click
@@ -162,7 +162,7 @@ const Navbar = ({ setName }) => {
             ))}
           </div>
           <span
-            className="flex items-center gap-3 px-4 py-2  rounded-xl   w-full  text-black font-semibold  hover:bg-[#636D8E] hover:text-white hover:shadow-md hover:cursor-pointer "
+            className="flex items-center gap-3 px-4 py-2  rounded-xl   w-full  text-black font-semibold  hover:bg-primaryPurple hover:text-white hover:shadow-md hover:cursor-pointer "
             // onClick={() => setIsOpen(false)}  close on selected this tab
             >
             <FolderIcon className="w-5 h-5 !space-y-2 my-2" />

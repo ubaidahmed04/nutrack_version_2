@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/nutrack.png";
+import logo from "../../assets/nutrack2.png";
 import { useDispatch } from "react-redux";
 import { LoginSuccess } from "../../redux/userSlice";
 import axios from "axios";
@@ -104,8 +104,12 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center -mt-10 md:-mt-0 md:justify-center relative overflow-hidden">
-      <div className="bg-white md:shadow-2xl rounded-lg md:p-8 flex flex-col md:flex-row items-center max-w-4xl w-full relative z-10">
+    <div className="min-h-screen flex items-center -mt-10 md:-mt-0 md:justify-center relative overflow-hidden bg-cover bg-center" 
+    style={{ backgroundImage: "url('https://media.istockphoto.com/id/1391730574/vector/light-sky-blue-and-faded-white-coloured-ombre-rustic-and-smudged-painted-plastered-scratched.jpg?s=612x612&w=0&k=20&c=0UzbHPlW4Tjor2v9Lont1XJmacbm7uUljglrSENFU3I=')" }}
+    >
+     <div className="absolute inset-0 bg-black/10 backdrop-blur-md"></div>
+
+      <div className="bg-white/10 backdrop-blur-xl md:shadow-2xl rounded-lg md:p-8 flex flex-col md:flex-row items-center max-w-4xl w-full relative z-10">
         {/* SVG Illustration */}
         <div className="md:w-1/2">
           <img
@@ -116,7 +120,7 @@ const Login = () => {
         </div>
         {/* Login Form */}
         <div className="md:w-1/2 w-full px-4">
-          <h2 className="text-4xl  font-bold text-[#636E8E] text-center mb-8"
+          <h2 className="text-xl sm:text-5xl   font-bold text-[#636E8E] text-center mb-8"
           >
             Login
           </h2>
@@ -126,7 +130,7 @@ const Login = () => {
                 className="block text-[#636E8E] text-sm md:text-lg font-semibold mb-2"
                 htmlFor="email"
               >
-                Enter Email
+                 Email
               </label>
               <input
                 className="w-full px-4 py-2 md:py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
@@ -201,9 +205,9 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
             >
-              Sign In
+              Login
             </button>
           </form>
         </div>

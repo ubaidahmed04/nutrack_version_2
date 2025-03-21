@@ -121,7 +121,7 @@ const AttendanceTable = ({ empAttendance }) => {
           </div>
         </div>
         <table className="min-w-full  border border-gray-300 px-3">
-          <thead className="bg-[#636D8E] text-white">
+          <thead className="bg-primaryPurple text-white">
             <tr className="">
               <th className="w-1/12 py-4 px-3 border-b text-left  font-semibold text-[11px] md:text-[16px] md:px-6 md:w-3/12">
                 #
