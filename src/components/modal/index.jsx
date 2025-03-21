@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Space } from "antd";
-import {SelectDepart, SelectEmployee, SelectInput} from "../SelectInput";
+import { SelectDepart, SelectEmployee, SelectInput } from "../SelectInput";
 import DatePickerComponent from "../DatePicker";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, } from "react-router-dom";
 import moment from "moment";
 import { postRequest } from "../../utils/APICall";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchingEmployeeStart,fetchingEmployeeSuccess,fetchingStart,fetchingSuccess} from "../../redux/attendanceSlice";
-import {fetchingEmployerStart,fetchingEmployerSuccess,} from "../../redux/allAttendanceSlice";
+import { fetchingEmployeeStart, fetchingEmployeeSuccess, fetchingStart, fetchingSuccess } from "../../redux/attendanceSlice";
+import { fetchingEmployerStart, fetchingEmployerSuccess, } from "../../redux/allAttendanceSlice";
 import { reduxFromDate, reduxToDate } from "../../redux/setDates";
 
-const   ModalComponents = ({titles,emloyeeList,message,setIsOpen,isOpen,setName}) => {
+const ModalComponents = ({ titles, emloyeeList, message, setIsOpen, isOpen, setName }) => {
   const { allEmployee } = useSelector((state) => state.employees);
   const { allDept } = useSelector((state) => state.employees);
   const { users } = useSelector((state) => state.user || {});
@@ -21,9 +21,11 @@ const   ModalComponents = ({titles,emloyeeList,message,setIsOpen,isOpen,setName}
   const [fromDate, setFromDate] = useState("");
   const dispatch = useDispatch();
   const url = titles.split(" ").join("");
+  // console.log("url -->>>", url)
   const navigate = useNavigate();
+  // const router = useRouter()
   const uniqueDepartments = allDept && [...new Map(allDept.map(item => [item.DEPT.trim() + item.CODE, { DEPT: item.DEPT.trim(), CODE: item.CODE }])).values()];
-  const filterEmployee = allDept?.filter((empl)=>{
+  const filterEmployee = allDept?.filter((empl) => {
     return empl.CODE === selectedDepartment
   })
   const showModal = () => {
@@ -35,15 +37,15 @@ const   ModalComponents = ({titles,emloyeeList,message,setIsOpen,isOpen,setName}
         dispatch(fetchingEmployeeStart());
         let route;
         let obj;
-        if(users.role == "HR" && selectedDepartment == "All"){
-          route = users.role == "HR" && selectedDepartment == "All" && "getAllEmployeesAttendance"
+        if (users?.data?.role == "HR" && selectedDepartment == "All") {
+          route = users?.data?.role == "HR" && selectedDepartment == "All" && "getAllEmployeesAttendance"
           obj = {
             todate: toDate,
             fromdate: fromDate,
           };
-        }else if (selectedEmployee === "All") {
-          route = `${users.role == "HR"? 
-            `${selectedDepartment ? `getAllEmployeesAttendance?departmentcode=${selectedDepartment}` : "getAllEmployeesAttendance"}` : 
+        } else if (selectedEmployee === "All") {
+          route = `${users?.data?.role == "HR" ?
+            `${selectedDepartment ? `getAllEmployeesAttendance?departmentcode=${selectedDepartment}` : "getAllEmployeesAttendance"}` :
             "getAllEmployeesAttendance?departmentcode=5"}`;
           obj = {
             todate: toDate,
@@ -65,12 +67,19 @@ const   ModalComponents = ({titles,emloyeeList,message,setIsOpen,isOpen,setName}
           dispatch(reduxFromDate(fromDate));
           setToDate("");
           setFromDate("");
+          
           navigate(`/${url}`);
-          setIsOpen(!isOpen)
-          const response = await postRequest(route, obj);
-          console.log(response);
-          dispatch(fetchingEmployeeSuccess(response));
-        }
+          console.log('navigate ka baad ka url', url)  // Pehle navigate karwao 
+       
+          try {
+             const response = await postRequest(route, obj);
+             console.log(response);
+             dispatch(fetchingEmployeeSuccess(response));
+          } catch (error) {
+             console.error("Error in API request:", error);
+          }
+       }
+       
       } else if (titles === "All Employee") {
         dispatch(fetchingEmployerStart());
         const route = "getAllEmployeesAttendance?departmentcode=5";
@@ -91,13 +100,13 @@ const   ModalComponents = ({titles,emloyeeList,message,setIsOpen,isOpen,setName}
           dispatch(fetchingEmployerSuccess(response));
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const handleCancel = () => {
     setOpen(false);
     // setIsOpen(!isOpen)
   };
-  const pickEmployee = (value,label) => {
+  const pickEmployee = (value, label) => {
     setSelectedEmployee(value);
     setName(label.label)
   };
@@ -110,59 +119,61 @@ const   ModalComponents = ({titles,emloyeeList,message,setIsOpen,isOpen,setName}
   const pickFromDate = (date, dateString) => {
     setFromDate(dateString);
   };
+
   return (
     <>
       {users?.role == "HR" ? (
         <>
-        <Space className="border-none">
-          {message ? (
-            <span
-              className="font-semibold text-[16px] bg-transparent border-0 text-inherit"
-              onClick={showModal}
-            >
-              {titles} 
-            </span>
-          ) : (
-            <span className="   hover:cursor-pointer px-3 py-2.5 rounded-xl bg-[#54559E] flex flex-wrap  hover: text-white hover:scale-105" onClick={showModal}>
-              {titles}
-            </span>
-          )}
-        </Space>
-        <Modal
-          open={open}
-          onOk={handleOk}
-          onCancel={handleCancel}
-          footer={(_, { OkBtn, CancelBtn }) => (
-            <>
-              <CancelBtn />
-              <OkBtn />
-            </>
-          )}
-        >
-          <h2 className="my-2 font-semibold text-[17px] text-gray-700">Select Department</h2>
-          <SelectDepart
+          <Space className="border-none">
+            {message ? (
+              <span
+                className="font-semibold text-[16px] bg-transparent border-0 text-inherit"
+                onClick={showModal}
+              >
+                {titles}
+              </span>
+            ) : (
+              <span className="   hover:cursor-pointer px-3 py-2.5 rounded-xl bg-[#54559E] flex flex-wrap  hover: text-white hover:scale-105" onClick={showModal}>
+                {titles}
+              </span>
+            )}
+          </Space>
+          <Modal
+            open={open}
+            onOk={() => handleOk()}
+            // onOk={handleOk}
+            onCancel={handleCancel}
+            footer={(_, { OkBtn, CancelBtn }) => (
+              <>
+                <CancelBtn />
+                <OkBtn />
+              </>
+            )}
+          >
+            <h2 className="my-2 font-semibold text-[17px] text-gray-700">Select Department</h2>
+            <SelectDepart
               departList={uniqueDepartments}
               onChange={pickDepartement}
               selectedDepartment={selectedDepartment}
-          />
-          <h2 className="my-2 font-semibold text-[17px] text-gray-700">Select Employee</h2>
-          <SelectEmployee
+            />
+            <h2 className="my-2 font-semibold text-[17px] text-gray-700">Select Employee</h2>
+            <SelectEmployee
               employeeList={filterEmployee}
               onChange={pickEmployee}
               selectedEmployee={selectedEmployee}
-          />
-          <div className="flex w-full py-5">
-            <div className="flex flex-col w-1/2">
-              <label className="font-semibold">From</label>
-              <DatePickerComponent onChange={pickFromDate} date={fromDate} />
+            />
+            <div className="flex w-full py-5">
+              <div className="flex flex-col w-1/2">
+                <label className="font-semibold">From</label>
+                <DatePickerComponent onChange={pickFromDate} date={fromDate} />
+              </div>
+              <div className="flex flex-col w-1/2">
+                <label className="font-semibold">To</label>
+                <DatePickerComponent onChange={pickToDate} date={toDate} />
+              </div>
             </div>
-            <div className="flex flex-col w-1/2">
-              <label className="font-semibold">To</label>
-              <DatePickerComponent onChange={pickToDate} date={toDate} />
-            </div>
-          </div>
-        </Modal>
-      </>
+          </Modal>
+        </>
       ) : (
         <>
           <Space>
@@ -171,14 +182,15 @@ const   ModalComponents = ({titles,emloyeeList,message,setIsOpen,isOpen,setName}
                 className="font-semibold text-[16px] bg-transparent border-0 text-inherit"
                 onClick={showModal}
               >
-                {titles} 
+                {titles}
               </Button>
             ) : (
-              <span className="px-4 py-2.5 rounded-xl bg-[#54559E] hover:cursor-pointer  text-white hover:scale-110 font-semibold"  onClick={showModal}>
-                {titles} 
+              <span className="px-4 py-2.5 rounded-xl bg-[#54559E] hover:cursor-pointer  text-white hover:scale-110 font-semibold" onClick={showModal}>
+                {titles}
               </span>
             )}
           </Space>
+
           <Modal
             open={open}
             title={

@@ -11,7 +11,7 @@ const SingleEmployee = ({name}) => {
   const pdfRef = useRef();
   const headerRef = useRef();
   const { users } = useSelector((state) => state.user || {});
-  console.log(name)
+  // console.log(name)
   const { singleEmployeeAttendance, isFetching } = useSelector(
     (state) => state.employeeAtt
   );

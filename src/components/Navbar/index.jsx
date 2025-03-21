@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import logo from '../../assets/nutrack.png';
 import { Link, NavLink } from 'react-router-dom';
-import { Drawer,  } from 'antd';
+import { Drawer, } from 'antd';
 import ModalComponents from '../modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { Logout } from '../../redux/userSlice';
 import { emptyEmployee } from '../../redux/employeeSlice';
-import { Bars3BottomRightIcon , ClipboardDocumentIcon, ClipboardDocumentListIcon,  XMarkIcon } from "@heroicons/react/16/solid";
+import { Bars3BottomRightIcon, ClipboardDocumentIcon, ClipboardDocumentListIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import {
   HomeIcon,
   FolderIcon,
   UserCircleIcon,
   // CreditCardIcon,
   ArrowLeftOnRectangleIcon,
-  DocumentTextIcon 
+  DocumentTextIcon
 } from "@heroicons/react/24/solid";
 const Navbar = ({ setName }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +22,7 @@ const Navbar = ({ setName }) => {
   const showDrawer = () => {
     setIsOpen(true);
   };
-  
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -36,7 +36,7 @@ const Navbar = ({ setName }) => {
       key: "home",
       label: "Home",
       icon: <HomeIcon className="w-5 h-5" />,
-      link:"/"
+      link: "/"
     },
     // {
     //   key: "Attendancesheet",
@@ -45,62 +45,62 @@ const Navbar = ({ setName }) => {
     //   // link:""
     // },
     ...(users && users.role === "HR") ?
-    [
-    {
-      key: "MarkAttendance",
-      label: "Mark Attendance",
-      icon: <ClipboardDocumentListIcon  className="w-5 h-5" />,
-       link:"/markatt"
-    },
-    {
-      key: "Users",
-      label: "Users",
-      icon: <UserCircleIcon className="w-5 h-5" />,
-      link:"allUser"
-    },
-    {
-      key: "Employee",
-      label: "Employee",
-      icon: <UserCircleIcon className="w-5 h-5" />,
-      link:"employee"
-    },
-    {
-      key: "Department",
-      label: "Department",
-      icon: <ClipboardDocumentIcon   className="w-5 h-5" />,
-      link:"department"
-    },
-    {
-      key: "Worksheet",
-      label: "Worksheet",
-      icon: <DocumentTextIcon   className="w-5 h-5" />,
-      link:"worksheet"
-    },
-    {
-      key: "Holiday",
-      label: "Holiday",
-      icon: <DocumentTextIcon   className="w-5 h-5" />,
-      link:"holiday"
-    },
-    // {
-    //   key: "PaySlip",
-    //   label: "PaySlip",
-    //   icon: <CreditCardIcon    className="w-5 h-5" />,
-    //   link:"payslip"
-    // },
-    {
-      key: "sickleave",
-      label: "Sick Leave",
-      icon: <DocumentTextIcon   className="w-5 h-5" />,
-      link:"sickleave"
-    },
-    {
-      key: "annualleave",
-      label: "Annual Leave",
-      icon: <DocumentTextIcon   className="w-5 h-5" />,
-      link:"annualleave"
-    },
-  ] : []
+      [
+        {
+          key: "MarkAttendance",
+          label: "Mark Attendance",
+          icon: <ClipboardDocumentListIcon className="w-5 h-5" />,
+          link: "/markatt"
+        },
+        {
+          key: "Users",
+          label: "Users",
+          icon: <UserCircleIcon className="w-5 h-5" />,
+          link: "allUser"
+        },
+        {
+          key: "Employee",
+          label: "Employee",
+          icon: <UserCircleIcon className="w-5 h-5" />,
+          link: "employee"
+        },
+        {
+          key: "Department",
+          label: "Department",
+          icon: <ClipboardDocumentIcon className="w-5 h-5" />,
+          link: "department"
+        },
+        {
+          key: "Worksheet",
+          label: "Worksheet",
+          icon: <DocumentTextIcon className="w-5 h-5" />,
+          link: "worksheet"
+        },
+        {
+          key: "Holiday",
+          label: "Holiday",
+          icon: <DocumentTextIcon className="w-5 h-5" />,
+          link: "holiday"
+        },
+        // {
+        //   key: "PaySlip",
+        //   label: "PaySlip",
+        //   icon: <CreditCardIcon    className="w-5 h-5" />,
+        //   link:"payslip"
+        // },
+        {
+          key: "sickleave",
+          label: "Sick Leave",
+          icon: <DocumentTextIcon className="w-5 h-5" />,
+          link: "sickleave"
+        },
+        {
+          key: "annualleave",
+          label: "Annual Leave",
+          icon: <DocumentTextIcon className="w-5 h-5" />,
+          link: "annualleave"
+        },
+      ] : []
   ];
   // const onMenuClick = (e) => {
   //   console.log("Selected menu item:", e.key); // Handle navigation
@@ -119,66 +119,66 @@ const Navbar = ({ setName }) => {
         </div>
         <div className="block pr-4 ">
           <button onClick={toggleMenu} className="text-gray-700 focus:outline-none">
-            {!isOpen ? <Bars3BottomRightIcon onClick={showDrawer} className="h-8 w-8 text-gray-700" /> : <XMarkIcon  className="h-8 w-8 text-gray-500" />}
+            {!isOpen ? <Bars3BottomRightIcon onClick={showDrawer} className="h-8 w-8 text-gray-700" /> : <XMarkIcon className="h-8 w-8 text-gray-500" />}
           </button>
         </div>
-        </div>
-        <div className='!max-w-72 w-full '>
+      </div>
+      <div className='!max-w-72 w-full '>
         <Drawer
-        title={
-          <div className="flex items-center justify-center">
-            <img
-              src={logo} 
-              alt="Logo"
-              className="bg-white p-2 rounded-full shadow-md"
-              width={150}
-              height={150}
-            />
+          title={
+            <div className="flex items-center justify-center">
+              <img
+                src={logo}
+                alt="Logo"
+                className="bg-white p-2 rounded-full shadow-md"
+                width={150}
+                height={150}
+              />
+            </div>
+          }
+          placement="right"
+          onClose={() => setIsOpen(false)}
+          open={isOpen}
+          className="!bg-gray-100 "
+        >
+
+          {/* Menu Items */}
+          <div className="space-y-4 w-full">
+            {menuItems.map((item) => (
+              <NavLink
+                key={item.key}
+                to={item.link}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-2 rounded-xl  ${!isActive
+                    ? " w-full  text-black font-semibold  hover:bg-[#636D8E] hover:text-white hover:shadow-md"
+                    : "bg-orange-400 font-bold text-white underline hover:text-black shadow-md"
+                  }`
+                }
+                onClick={() => setIsOpen(false)} // Close drawer on click
+              >
+                {item.icon}
+                {item.label}
+              </NavLink>
+            ))}
           </div>
-        }
-        placement="right"
-        onClose={() => setIsOpen(false)}
-        open={isOpen}
-        className="!bg-gray-100 "
-      >
-      
-        {/* Menu Items */}
-        <div className="space-y-4 w-full">
-          {menuItems.map((item) => (
-            <NavLink
-              key={item.key}
-              to={item.link}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2 rounded-xl  ${
-                  !isActive
-                  ? " w-full  text-black font-semibold  hover:bg-[#636D8E] hover:text-white hover:shadow-md"
-                  : "bg-orange-400 font-bold text-white underline hover:text-black shadow-md"
-                }`
-              }
-              onClick={() => setIsOpen(false)} // Close drawer on click
+          <span
+            className="flex items-center gap-3 px-4 py-2  rounded-xl   w-full  text-black font-semibold  hover:bg-[#636D8E] hover:text-white hover:shadow-md"
+            onClick={() => setIsOpen(false)} 
             >
-              {item.icon}
-              {item.label}
-            </NavLink>
-          ))}
-        </div>
-        <NavLink
-        className="flex items-center gap-3 px-4 py-2  rounded-xl   w-full  text-black font-semibold  hover:bg-[#636D8E] hover:text-white hover:shadow-md"
-        onClick={() => setIsOpen(false)} >
-          <FolderIcon className="w-5 h-5 !space-y-2 my-2" />
-        <ModalComponents titles="Attendance Sheet" isOpen={isOpen} setIsOpen={setIsOpen} message="responsive" setName={setName} />
-      </NavLink> 
-        {/* Footer Section */}
-        <div className="absolute bottom-6 left-6   w-full px-4">
-          <button
-            onClick={logout}
-            className="flex items-center gap-3 font-semibold hover:bg-red-200 w-full p-4 rounded-xl text-red-600 hover:text-red-800"
-          >
-            <ArrowLeftOnRectangleIcon className="w-5 h-5" />
-            Logout
-          </button>
-        </div>
-      </Drawer>
+            <FolderIcon className="w-5 h-5 !space-y-2 my-2" />
+            <ModalComponents titles="Attendance Sheet" isOpen={isOpen} setIsOpen={setIsOpen} message="responsive" setName={setName} />
+          </span>
+          {/* Footer Section */}
+          <div className="absolute bottom-6 left-6   w-full px-4">
+            <button
+              onClick={logout}
+              className="flex items-center gap-3 font-semibold hover:bg-red-200 w-full p-4 rounded-xl text-red-600 hover:text-red-800"
+            >
+              <ArrowLeftOnRectangleIcon className="w-5 h-5" />
+              Logout
+            </button>
+          </div>
+        </Drawer>
       </div>
       {/* ya ha open close */}
       {/* <div

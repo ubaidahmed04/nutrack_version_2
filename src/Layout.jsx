@@ -3,6 +3,7 @@ import { Navbar } from './components'
 import { Outlet } from 'react-router-dom'
 
 const Layout = ({setName}) => {
+  console.log(setName)
   return (
     <div>
         <Navbar setName={setName}/>
