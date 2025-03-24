@@ -21,7 +21,8 @@ const ModalComponents = ({ titles, emloyeeList, message, setIsOpen, isOpen, setN
   const [fromDate, setFromDate] = useState("");
   const dispatch = useDispatch();
   const url = titles.split(" ").join("");
-  // console.log("url -->>>", url)
+  console.log("to date -->>>", toDate)
+  console.log("from date -->>>", fromDate)
   const navigate = useNavigate();
   // const router = useRouter()
   const uniqueDepartments = allDept && [...new Map(allDept.map(item => [item.DEPT.trim() + item.CODE, { DEPT: item.DEPT.trim(), CODE: item.CODE }])).values()];
@@ -46,6 +47,7 @@ const ModalComponents = ({ titles, emloyeeList, message, setIsOpen, isOpen, setN
             fromdate: fromDate,
           };
         } else if (selectedEmployee === "All") {
+          console.log("department",selectedDepartment)
           // remove data.role
           route = `${users?.role == "HR" ?
             `${selectedDepartment ? `getAllEmployeesAttendance?departmentcode=${selectedDepartment}` : "getAllEmployeesAttendance"}` :

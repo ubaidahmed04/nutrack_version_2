@@ -5,7 +5,7 @@ const EmployeeTable = ({ employeeAttendance }) => {
   const tableHead = `py-3 px-3 border-b text-left text-gray-800 font-bold text-[14px] lg:text-lg`;
   const tableBody = `px-3 py-2 border-b font-semibold text-left`;
   const {users} = useSelector((state) => state.user || {})
-  console.log(employeeAttendance)
+  // console.log(employeeAttendance)
   return (
     <div className="">
       <div className="w-full h-[calc(100vh-170px)] overflow-y-auto mt-2 md:mt-3">

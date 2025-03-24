@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { depatmentList, employeeList } from '../redux/employeeSlice'
 
 const Home = () => {
-    const dipatch = useDispatch()
+    const dispatch = useDispatch()
     
     const {allEmployee} = useSelector((state) => state.employees || {})
 
@@ -15,7 +15,7 @@ const Home = () => {
         try {
             // const response = await getRequest('getAllUser?departmentcode=5')
             const response = await getRequest(`${users?.role == "HR" ? "getAllUser" : "getAllUser?departmentcode=5"}`)
-            dipatch(employeeList(response.data))
+            dispatch(employeeList(response.data))
         } catch (error) {
             console.log(error)
         }
@@ -24,7 +24,7 @@ const Home = () => {
         try {
             // const response = await getRequest('getAllUser?departmentcode=5')
             const response = await getRequest(`${users?.role == "HR" ? "getAllDept" : "getAllDept?departmentcode=5"}`)
-            dipatch(depatmentList(response))
+            dispatch(depatmentList(response))
         } catch (error) {
             console.log(error)
         }

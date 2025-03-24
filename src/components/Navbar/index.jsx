@@ -15,6 +15,7 @@ import {
   ArrowLeftOnRectangleIcon,
   DocumentTextIcon
 } from "@heroicons/react/24/solid";
+import { FaClipboardList } from 'react-icons/fa';
 const Navbar = ({ setName }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { users } = useSelector((state) => state.user || {})
@@ -177,7 +178,7 @@ const Navbar = ({ setName }) => {
             className={users?.role == "HR" ? "flex items-center gap-3 px-4 py-2  rounded-xl   w-full  text-black font-semibold  hover:bg-primaryPurple hover:text-white hover:shadow-md hover:cursor-pointer " :"hidden"}
             // onClick={() => setIsOpen(false)}  close on selected this tab
             >
-            <ClipboardDocumentListIcon className="w-5 h-5 !space-y-2 my-2" />
+            <FaClipboardList className="w-5 h-5 !space-y-2 my-2" />
             <ModalComponents titles="Monthly Report" isOpen={isOpen} setIsOpen={setIsOpen} message="responsive" setName={setName} />
           </span>
           <span

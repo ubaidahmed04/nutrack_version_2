@@ -140,6 +140,7 @@ const AttendanceTable = ({ empAttendance }) => {
           <tbody>
             {empAttendance.map((item, index) => {
               const isAbsent = !item.ENTRYTIME;
+              
               return (
                 <tr key={index} className={`${isAbsent ? "bg-red-200" : "bg-white"}`} onClick={()=>handleSubmit(item)}>
                   <td className={`px-3 ${td}`}>{index + 1}</td>
