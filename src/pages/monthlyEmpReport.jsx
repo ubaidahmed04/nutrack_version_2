@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { EmployeeTable, Loader } from "../components";
 import { useSelector } from "react-redux";
 import Logo from "../assets/nutrack.png";
@@ -6,10 +6,11 @@ import { CloudDownloadOutlined } from "@ant-design/icons";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import MonthlyReportTable from "../components/MonthlyReportTable";
-const MonthlyEmployeeReport = ({name}) => {
+const MonthlyEmployeeReport = ({ name }) => {
   const tableHead = `pt-2 pb-4 border-b text-center text-gray-800 font-bold text-[16px]`;
   const tableBody = `pt-2 pb-4 border-b font-semibold text-center text-[16px]`;
   const pdfRef = useRef();
+  const [showPDFUI, setShowPDFUI] = useState(true);
   const headerRef = useRef();
   const { users } = useSelector((state) => state.user || {});
   // console.log("name",name)
@@ -108,7 +109,7 @@ const MonthlyEmployeeReport = ({name}) => {
         <div className="h-full">
           <div className="flex w-full  items-center ">
             <h1 className="flex  w-full justify-center  text-lg items-center  sm:text-xl lg:text-2xl font-bold text-start md:py-2 md:mb-0">
-             Monthly Employee Report
+              Monthly Employee Report
             </h1>
             <button className="flex justify-around  items-center mr-5">
               <CloudDownloadOutlined
@@ -123,7 +124,7 @@ const MonthlyEmployeeReport = ({name}) => {
               <span>Absent</span>
             </div>
             {/* late me space zada tha is lye w-16 se w-12 ki he  */}
-            <div className="flex w-12 justify-around items-center  text-sm "> 
+            <div className="flex w-12 justify-around items-center  text-sm ">
               <span className="h-4 w-4 bg-yellow-200"></span>
               <span>Late</span>
             </div>
@@ -141,6 +142,14 @@ const MonthlyEmployeeReport = ({name}) => {
         {/* PDF HTML */}
         {singleEmployeeAttendance && (
           <span
+            // style={{
+            //   position: "fixed",
+            //     left: "500px",
+            //     top: "0px",
+            //     height: "100%",
+            //     display: showPDFUI ? "block" : "none",
+            //   width: "210mm",
+            // }}
             style={{
               position: "fixed",
               left: "-9999px",
@@ -149,13 +158,13 @@ const MonthlyEmployeeReport = ({name}) => {
           >
             <div
               ref={headerRef}
-              className="flex items-center justify-between w-full border-b-2 border-gray-600"
+              className="flex items-center justify-between w-full border-b-2 border-green-600"
             >
               <div className="w-1/6">
                 <img src={Logo} alt="" width={200} />
               </div>
               <h1 className="w-3/6 text-[22px] font-semibold text-center mb-5">
-                 Monthly Employee Report
+                Monthly Employee Report
               </h1>
               <div className="w-2/6 text-start mb-2 relative">
                 <span className="text-[12px] font-semibold absolute right-5 top-0">
@@ -165,20 +174,26 @@ const MonthlyEmployeeReport = ({name}) => {
             </div>
             <div ref={pdfRef} className="">
               <div className="w-full">
-                <table className="w-[210mm] border border-gray-300 pt-5">
-                  {/* <thead className="bg-gray-300 w-full h-full">
+                <table className="w-[210mm] border border-gray-400 pt-5">
+                  {/* <table className=" border border-red-400 pt-5"> */}
+                  <thead className="bg-gray-300 w-full h-full">
                     <tr className="text-center w-full">
-                      <th className={`${tableHead} w-5/12`}>Date</th>
-                      <th className={`${tableHead} w-2/12`}>Entry Time</th>
-                      <th className={`${tableHead} w-2/12`}>Leaving Time</th>
-                      <th className={`${tableHead} w-1/12`}>Hours</th>
-                      <th className={`${tableHead} w-2/12`}>Total Hours</th>
+                      {/* <th className={`${tableHead} w-5/12`}></th>
+                      <th className={`${tableHead} w-2/12`}></th>
+                      <th className={`${tableHead} w-2/12`}></th>
+                      <th className={`${tableHead} w-1/12`}></th>
+                      <th className={`${tableHead} w-2/12`}></th> */}
                     </tr>
-                  </thead> */}
+                  </thead>
                   {singleEmployeeAttendance && (
                     <tbody>
-                      {Object.keys(singleEmployeeAttendance)?.map((dept ,index) => (
+                      {Object.keys(singleEmployeeAttendance)?.map((dept, index) => (
                         <React.Fragment key={index}>
+                          <tr className="bg-blue-400 text-white">
+                            <td colSpan="5" className="px-6 pb-4 text-lg font-bold text-center uppercase">
+                              {dept}
+                            </td>
+                          </tr>
                           {singleEmployeeAttendance[dept]?.map((employee, index) => (
                             <>
                               <tr className="" key={index}>
@@ -196,62 +211,31 @@ const MonthlyEmployeeReport = ({name}) => {
                                 let totalPresent = 0;
                                 let totalDays = 0;
                                 employee.attendanceData.forEach((attendance) => {
-                                    if (attendance.totalHours) {
-                                      const [hours, minutes] = attendance.totalHours.split(":").map(Number);
-                                      totalHours += hours;
-                                      totalMinutes += minutes;
-                                    }
-                                    if(attendance.late === "Late"){
-                                      totalLate += 1
-                                    }
-                                    if(attendance.remark === "present"){
-                                      totalPresent += 1
-                                    }
-                                    if(!attendance.entryTime && attendance.remark !== "SATURDAY" && attendance.remark !== "SUNDAY"){
-                                      totalAbsent += 1
-                                    }
-                                    if(attendance.remark !== "SATURDAY" && attendance.remark !== "SUNDAY"){
-                                      totalDays += 1
-                                    }
+                                  if (attendance.totalHours) {
+                                    const [hours, minutes] = attendance.totalHours.split(":").map(Number);
+                                    totalHours += hours;
+                                    totalMinutes += minutes;
                                   }
+                                  if (attendance.late === "Late") {
+                                    totalLate += 1
+                                  }
+                                  if (attendance.remark === "present") {
+                                    totalPresent += 1
+                                  }
+                                  if (!attendance.entryTime && attendance.remark !== "SATURDAY" && attendance.remark !== "SUNDAY") {
+                                    totalAbsent += 1
+                                  }
+                                  if (attendance.remark !== "SATURDAY" && attendance.remark !== "SUNDAY") {
+                                    totalDays += 1
+                                  }
+                                }
                                 );
                                 totalHours += Math.floor(totalMinutes / 60);
                                 totalMinutes = totalMinutes % 60;
                                 const formattedMinutes = String(totalMinutes).padStart(2, "0");
                                 return (
                                   <>
-                                    {/* {employee.attendanceData.map(
-                                      (attendance, index) => (
-                                        <tr
-                                          className={`${
-                                            attendance.remark == "SUNDAY" || attendance.remark == "SATURDAY" ? "bg-blue-300" : attendance.remark === "Absent" ||
-                                                attendance.remark == "Sick Leave" || attendance.remark == "Annual Leave" ? "bg-red-300" : attendance.late === "Late"
-                                              ? "bg-yellow-100" : attendance.remark === "present" ? "bg-white" : "bg-green-100"
-                                          }`}
-                                          key={index}
-                                        >
-                                          <td className={`${tableBody} w-5/12`}>
-                                            <span>{attendance.date}</span>
-                                            <span className="">
-                                              {attendance?.remark !== "Annual Leave" && attendance?.remark !== "Sick Leave" && attendance.remark !== "Absent" &&
-                                                attendance.remark !== "present" &&  attendance.remark !== "SATURDAY" && attendance.remark !== "SUNDAY" && attendance.remark}
-                                            </span>
-                                          </td>
-                                          <td className={`${tableBody} w-2/12`}>
-                                            {attendance.entryTime ? attendance.entryTime : attendance.remark}
-                                          </td>
-                                          <td className={`${tableBody}  w-3/12`}>
-                                            {attendance.leavingTime ? attendance.leavingTime : attendance.leaveRemark && attendance.leaveRemark?.slice(0,20)+"..."}
-                                          </td>
-                                          <td className={`${tableBody} w-1/12`}>
-                                            {attendance.hours}
-                                          </td>
-                                          <td className={`${tableBody} w-1/12`}>
-                                            {attendance.totalHours}
-                                          </td>
-                                        </tr>
-                                      )
-                                    )} */}
+
                                     <tr className="bg-gray-300">
                                       <td className="border-b font-semibold text-gray-700 pt-2 pb-4 px-6">
                                         TDays ({totalDays})&nbsp;&nbsp;&nbsp;TPresent ({totalPresent})

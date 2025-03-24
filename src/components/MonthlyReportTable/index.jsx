@@ -74,25 +74,7 @@ const MonthlyReportTable = ({ employeeAttendance }) => {
                   const formattedMinutes = String(totalMinutes).padStart(2,"0");
                   return (
                     <>
-                      {/* {employee.attendanceData.map((attendance, index) => (
-                        <tr className={`${attendance.remark == "SUNDAY" || attendance.remark == "SATURDAY" ? "bg-blue-300" :
-                          attendance.remark === "Absent" || attendance.remark == "Sick Leave" || attendance.remark == "Annual Leave" ? "bg-red-300" :
-                          attendance.late === 'Late' ? 'bg-yellow-100' :
-                          attendance.remark === 'present' ? 'bg-white' : 'bg-green-100'}`}
-                          key={index}>
-                          <td className={`${tableBody}`}>
-                            {attendance.date}
-                            <span className="">{attendance?.remark !== 'Annual Leave' && attendance?.remark !== 'Sick Leave' && attendance?.remark !== 'Absent' && attendance?.remark !== 'present' && attendance?.remark !== 'SATURDAY' && attendance?.remark !== 'SUNDAY' && `(${attendance?.remark})`}</span>
-                          </td>
-                          <td className={`${tableBody}`}>
-                            {attendance.entryTime ? attendance.entryTime : attendance.leaveRemark ? `${attendance.remark} (${attendance.leaveRemark})` : attendance.remark}
-                          </td>
-                          <td className={`${tableBody}`}>{attendance.leavingTime}</td>
-                          <td className={`${tableBody}`}>{attendance.hours}</td>
-                          <td className={`${tableBody}`}>{attendance.totalHours}</td>
-                        </tr>
-                      )
-                      )} */}
+                    
                       <tr className="bg-gray-300 ">
                         <td className="px-3 py-2 border-b font-bold">
                           <span className="mr-3">Total Days</span>

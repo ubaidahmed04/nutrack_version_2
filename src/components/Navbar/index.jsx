@@ -174,7 +174,7 @@ const Navbar = ({ setName }) => {
             ))}
           </div>
           <span
-            className={users?.role== "HR" ?"flex items-center gap-3 px-4 py-2  rounded-xl   w-full  text-black font-semibold  hover:bg-primaryPurple hover:text-white hover:shadow-md hover:cursor-pointer " :"hidden"}
+            className={users?.role == "HR" ? "flex items-center gap-3 px-4 py-2  rounded-xl   w-full  text-black font-semibold  hover:bg-primaryPurple hover:text-white hover:shadow-md hover:cursor-pointer " :"hidden"}
             // onClick={() => setIsOpen(false)}  close on selected this tab
             >
             <ClipboardDocumentListIcon className="w-5 h-5 !space-y-2 my-2" />
