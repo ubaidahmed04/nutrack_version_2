@@ -47,59 +47,65 @@ const Navbar = ({ setName }) => {
     ...(users && users.role === "HR") ?
       [
         {
-          key: "MarkAttendance",
-          label: "Mark Attendance",
+          key: "TodayAttendence",
+          label: "Today Attendance",
           icon: <ClipboardDocumentListIcon className="w-5 h-5" />,
-          link: "/markatt"
+          link: "/todayAttendence"
         },
-        {
-          key: "Users",
-          label: "Users",
-          icon: <UserCircleIcon className="w-5 h-5" />,
-          link: "allUser"
-        },
-        {
-          key: "Employee",
-          label: "Employee",
-          icon: <UserCircleIcon className="w-5 h-5" />,
-          link: "employee"
-        },
-        {
-          key: "Department",
-          label: "Department",
-          icon: <ClipboardDocumentIcon className="w-5 h-5" />,
-          link: "department"
-        },
-        {
-          key: "Worksheet",
-          label: "Worksheet",
-          icon: <DocumentTextIcon className="w-5 h-5" />,
-          link: "worksheet"
-        },
-        {
-          key: "Holiday",
-          label: "Holiday",
-          icon: <DocumentTextIcon className="w-5 h-5" />,
-          link: "holiday"
-        },
+        // {
+        //   key: "MarkAttendance",
+        //   label: "Mark Attendance",
+        //   icon: <ClipboardDocumentListIcon className="w-5 h-5" />,
+        //   link: "/markatt"
+        // },
+        // {
+        //   key: "Users",
+        //   label: "Users",
+        //   icon: <UserCircleIcon className="w-5 h-5" />,
+        //   link: "allUser"
+        // },
+        // {
+        //   key: "Employee",
+        //   label: "Employee",
+        //   icon: <UserCircleIcon className="w-5 h-5" />,
+        //   link: "employee"
+        // },
+        // {
+        //   key: "Department",
+        //   label: "Department",
+        //   icon: <ClipboardDocumentIcon className="w-5 h-5" />,
+        //   link: "department"
+        // },
+        // {
+        //   key: "Worksheet",
+        //   label: "Worksheet",
+        //   icon: <DocumentTextIcon className="w-5 h-5" />,
+        //   link: "worksheet"
+        // },
+        // {
+        //   key: "Holiday",
+        //   label: "Holiday",
+        //   icon: <DocumentTextIcon className="w-5 h-5" />,
+        //   link: "holiday"
+        // },
         // {
         //   key: "PaySlip",
         //   label: "PaySlip",
         //   icon: <CreditCardIcon    className="w-5 h-5" />,
         //   link:"payslip"
         // },
-        {
-          key: "sickleave",
-          label: "Sick Leave",
-          icon: <DocumentTextIcon className="w-5 h-5" />,
-          link: "sickleave"
-        },
-        {
-          key: "annualleave",
-          label: "Annual Leave",
-          icon: <DocumentTextIcon className="w-5 h-5" />,
-          link: "annualleave"
-        },
+        // {
+        //   key: "sickleave",
+        //   label: "Sick Leave",
+        //   icon: <DocumentTextIcon className="w-5 h-5" />,
+        //   link: "sickleave"
+        // },
+        // {
+        //   key: "annualleave",
+        //   label: "Annual Leave",
+        //   icon: <DocumentTextIcon className="w-5 h-5" />,
+        //   link: "annualleave"
+        // },
       ] : []
   ];
   // const onMenuClick = (e) => {

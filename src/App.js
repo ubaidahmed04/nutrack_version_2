@@ -20,15 +20,19 @@ import WorkSheet from './pages/WorkSheet';
 import Holiday from './pages/Holiday';
 import SickLeaves from './pages/SickLeaves';
 import AnnualLeaves from './pages/AnnualLeaves';
+import TodayAttendence from './pages/todayAttendence';
+import AdminDashboard from './pages/adminDashboard';
 function App() {
   const {users} = useSelector((state) => state.user || {})
+  // console.log("users--->>>",users)
   const [ name, setName] = useState('')
   return (
       <BrowserRouter>
         <Routes>
           <Route path='/login' element={users ? <Navigate to='/' /> : <LoginPage/>} />
           <Route path="/" element={<Layout setName={setName}/>}>
-            <Route path='/' element={users ? <Home /> : <Navigate to='/login' />}/>
+        <Route index element={users?.role === "Client" ? <Home /> : users?.role === "HR" ? <AdminDashboard /> : <Navigate to="/login" replace />} />
+            <Route path='/todayAttendence' element={users ? <TodayAttendence /> : <Navigate to='/login' />}/>
             <Route path='/AttendanceSheet' element={users ? <SingleEmployee name={name}/> : <Navigate to='/login' />}/>
             <Route path='/EmployeeSummary/:id' element={users ? <EmpSummary/> : <Navigate to='/EmployeeSummary' />}/>
             <Route path='/allUser' element={users ? <AllUser /> : <Navigate to='/login' />}/>
