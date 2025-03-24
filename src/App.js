@@ -22,6 +22,7 @@ import SickLeaves from './pages/SickLeaves';
 import AnnualLeaves from './pages/AnnualLeaves';
 import TodayAttendence from './pages/todayAttendence';
 import AdminDashboard from './pages/adminDashboard';
+import MonthlyEmployeeReport from './pages/monthlyEmpReport';
 function App() {
   const {users} = useSelector((state) => state.user || {})
   // console.log("users--->>>",users)
@@ -34,6 +35,7 @@ function App() {
         <Route index element={users?.role === "Client" ? <Home /> : users?.role === "HR" ? <AdminDashboard /> : <Navigate to="/login" replace />} />
             <Route path='/todayAttendence' element={users ? <TodayAttendence /> : <Navigate to='/login' />}/>
             <Route path='/AttendanceSheet' element={users ? <SingleEmployee name={name}/> : <Navigate to='/login' />}/>
+            <Route path='/MonthlyReport' element={users ? <MonthlyEmployeeReport name={name}/> : <Navigate to='/login' />}/>
             <Route path='/EmployeeSummary/:id' element={users ? <EmpSummary/> : <Navigate to='/EmployeeSummary' />}/>
             <Route path='/allUser' element={users ? <AllUser /> : <Navigate to='/login' />}/>
             <Route path='/employee' element={users ? <Employee /> : <Navigate to='/login' />}/>

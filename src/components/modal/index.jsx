@@ -33,7 +33,7 @@ const ModalComponents = ({ titles, emloyeeList, message, setIsOpen, isOpen, setN
   };
   const handleOk = async () => {
     try {
-      if (titles === "Attendance Sheet") {
+      if (titles === "Attendance Sheet" || "Monthly Report") {
         dispatch(fetchingEmployeeStart());
         let route;
         let obj;
