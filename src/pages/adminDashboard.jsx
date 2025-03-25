@@ -9,16 +9,7 @@ import { fetchingEmployeeErorr, fetchingEmployeeStart, fetchingEmployeeSuccess }
 import TableSkeleton from "../components/loader/tableSkeleton";
 
 const Dashboard = () => {
-  const recruitmentData = [
-    { name: "IT Enable Services", value: 8 },
-    { name: "Web Development", value: 5 },
-    { name: "Desktop Development", value: 1 },
-    { name: "Degital Marketing", value: 2 },
-    { name: "Mobile Development", value: 5 },
-    { name: "Administrator", value: 2 },
-    { name: "HR", value: 1 },
-  ];
-
+  
   const attendanceData = [
     { day: "Sun", present: 0, absent: 0, leave: "Off" },
     { day: "Mon", present: 15, absent: 3, leave: 7 },
@@ -96,6 +87,39 @@ const Dashboard = () => {
     }
 
   }
+  // show department data 
+  
+  const departmentColors = {
+    "HR": "#00BFFF",
+    " IT Enable Services": "#A020F0",
+    "Administrator": "#FFBB28",
+    "DIGITEL MARKETING": "#FF8042",
+    "Desktop Development": "#00C49F",
+    "Mobile Development": "#32CD32",
+    "Web Development": "#FF4500",
+  };
+  const recruitmentData = singleEmployeeAttendance && Object.keys(singleEmployeeAttendance)?.map((dept) => ({
+    name: dept,
+    value: singleEmployeeAttendance[dept]?.length, // Count of employees in each department
+    color: departmentColors[dept] || "#CCCCCC"
+  }));
+  // const renderCustomizedLabel = ({ viewBox }) => {
+  //   const { cx, cy } = viewBox;
+  //   return (
+  //     <text
+  //       x={cx}
+  //       y={cy - 10} // Adjust positioning
+  //       textAnchor="middle"
+  //       dominantBaseline="central"
+  //       fontSize="16"
+  //       fontWeight="bold"
+  //       fill="#333"
+  //     >
+  //       {`Total: ${recruitmentData?.length}`}
+  //     </text>
+  //   );
+  // };
+  // console.log("recruitmentData==>>>",recruitmentData)
   const fetchAttendance = async () => {
     try {
       // const response = await getRequest('getAllUser?departmentcode=5')
@@ -160,18 +184,61 @@ const Dashboard = () => {
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-white p-4 shadow rounded-lg">
-            <h2 className="text-lg font-semibold">Department</h2>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={recruitmentData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="value" fill="#4F46E5" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="bg-white p-6 shadow rounded-lg">
+      <h2 className="text-lg font-semibold mb-4">Department Overview</h2>
+      {isFetching ? (
+  <div className="flex justify-center items-center h-40">
+    <span className="text-gray-500 text-lg">Loading...</span>
+  </div>
+) : (
+  <div className="flex items-center">
+    <ResponsiveContainer width={200} height={200}>
+      <PieChart>
+        <Pie
+          data={recruitmentData}
+          dataKey="value"
+          cx="50%"
+          cy="50%"
+          innerRadius={60}
+          outerRadius={80}
+          paddingAngle={5}
+          startAngle={180}
+          endAngle={-180}
+          label={({ cx, cy }) => (
+            <text
+              x={cx}
+              y={cy}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontSize="16"
+              fontWeight="bold"
+              fill="#333"
+            >
+              {`Total: ${recruitmentData?.length}`}
+            </text>
+          )}
+        >
+          {recruitmentData?.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry?.color} />
+          ))}
+        </Pie>
+        <Tooltip formatter={(value, name) => [`${value}`, name]} />
+      </PieChart>
+    </ResponsiveContainer>
 
+    {/* Legend */}
+    <div className="ml-6">
+      {recruitmentData?.map((dept, index) => (
+        <div key={index} className="flex items-center mb-2">
+          <span className="w-4 h-4 mr-2" style={{ backgroundColor: dept?.color }}></span>
+          <span className="text-sm">{dept?.name}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
+    </div>
 
           <div className="bg-white p-4 shadow rounded-lg">
             <h2 className="text-lg font-semibold">Daily Attendance</h2>
@@ -219,7 +286,7 @@ const Dashboard = () => {
       </thead>
       <tbody>
         { singleEmployeeAttendance &&
-          Object.keys(singleEmployeeAttendance).map((dept) => (
+          Object.keys(singleEmployeeAttendance)?.map((dept) => (
             <>
               {/* Department Row */}
               <tr className="bg-gray-200">
@@ -229,7 +296,7 @@ const Dashboard = () => {
               </tr>
 
               {/* Employees Inside Department */}
-              {singleEmployeeAttendance[dept].map((employee, index) => (
+              {singleEmployeeAttendance[dept]?.map((employee, index) => (
                 <tr key={index} className="text-center">
                   <td className="border border-gray-300 p-2">{employee.firstname}</td>
                   <td className="border border-gray-300 p-2">{dept}</td>
