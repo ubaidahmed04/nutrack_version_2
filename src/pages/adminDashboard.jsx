@@ -26,12 +26,17 @@ const Dashboard = () => {
   const [presentCount, setPresentCount] = useState(0)
   const [absentCount, setAbsentCount] = useState(0)
   const [absentData, setAbsentData] = useState([])
+  const [weeklyAttData, setWeeklyAttData] = useState([])
+  const [todayAttData, setTodayAttData] = useState([])
+  const [todayAttLoader, setTodayAttLoader] = useState([])
+  const [isLoading, setIsLoading] = useState(true);
+  const [absentLoader, setAbsentLoader] = useState(true);
   const [leaveCount, setLeaveCount] = useState(0)
   const { allEmployee } = useSelector((state) => state.employees || {})
   const { singleEmployeeAttendance, isFetching } = useSelector(
     (state) => state.employeeAtt
   );
-  console.log("singleEmployeeAttendance --->>>", singleEmployeeAttendance)
+  // console.log("singleEmployeeAttendance --->>>", singleEmployeeAttendance)
   // const previousDayData = singleEmployeeAttendance
   const TotalPresentFunc = () => {
     let count = 0
@@ -43,6 +48,7 @@ const Dashboard = () => {
     })
   }
   const TotalAbsentFunc = () => {
+    setAbsentLoader(true)
     let absentList = [];
     let count = 0
     allEmployee?.forEach((item, index) => {
@@ -52,6 +58,8 @@ const Dashboard = () => {
       }
       setAbsentCount(count)
       setAbsentData(absentList)
+      setAbsentLoader(false)
+
     })
   }
   const TotalLeaveFunc = () => {
@@ -70,7 +78,7 @@ const Dashboard = () => {
     let yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     let formatDate = moment(yesterday, "MM/DD/YYYY").format("DD-MMMM-YYYY")
-    console.log("formatDate", formatDate)
+    // console.log("formatDate", formatDate)
    let  obj = {
       empid: "All",
       todate: formatDate,
@@ -79,7 +87,7 @@ const Dashboard = () => {
     try {
       dispatch(fetchingEmployeeStart());
       const response = await postRequest("getAllEmployeesAttendance", obj);
-      console.log("get detail",response);
+      // console.log("get detail",response);
       dispatch(fetchingEmployeeSuccess(response));
     } catch (error) {
       dispatch(fetchingEmployeeErorr());
@@ -87,8 +95,64 @@ const Dashboard = () => {
     }
 
   }
-  // show department data 
+  // weekly attendence
+  const fetchLastWeekAttendance = async () => {
+    setIsLoading(true);
+    let today = new Date();
+    let lastWeek = new Date();
+    lastWeek.setDate(today.getDate() - 6);
   
+    let fromDate = moment(lastWeek).format("DD-MMMM-YYYY");
+    let toDate = moment(today).format("DD-MMMM-YYYY");
+  console.log("from date ",fromDate)
+    let obj = {
+      empid: "All",
+      todate: toDate,
+      fromdate: fromDate,
+    };
+  
+    try {
+      const response = await postRequest("getAllEmployeesAttendance", obj);
+      console.log("API Response:", response);
+  
+      if (response) {
+        let dayWiseData = {};
+  
+        Object.keys(response).forEach((department) => {
+          let records = response[department] || []; 
+          
+          records.forEach((record) => {
+            (record.attendanceData || []).forEach((entry) => {
+              let dayName = moment(entry.date1, "DD-MMM-YYYY").format("dddd");
+  
+              if (!dayWiseData[dayName]) {
+                dayWiseData[dayName] = { present: 0, absent: 0, leave: 0 };
+              }
+  
+              dayWiseData[dayName].present += entry.remark === "present" ? 1 : 0;
+              dayWiseData[dayName].absent += entry.remark === "Absent" ? 1 : 0;
+              dayWiseData[dayName].leave += entry.leaveRemark ? 1 : 0;
+            });
+          });
+        });
+  
+        // 🔥 Convert Object to Array for Chart.js
+        const formattedData = Object.keys(dayWiseData).map((day) => ({
+          day,
+          present: dayWiseData[day].present,
+          absent: dayWiseData[day].absent,
+        }));
+  
+        // console.log("📊 Chart Data:", formattedData);
+        setWeeklyAttData(formattedData);
+      }
+    } catch (error) {
+      console.error("❌ Error fetching last week attendance:", error);
+    }
+    setIsLoading(false);
+  };  
+  // console.log("weeklyAttData ==>>>",weeklyAttData)
+  // show department data 
   const departmentColors = {
     "HR": "#00BFFF",
     " IT Enable Services": "#A020F0",
@@ -103,28 +167,12 @@ const Dashboard = () => {
     value: singleEmployeeAttendance[dept]?.length, // Count of employees in each department
     color: departmentColors[dept] || "#CCCCCC"
   }));
-  // const renderCustomizedLabel = ({ viewBox }) => {
-  //   const { cx, cy } = viewBox;
-  //   return (
-  //     <text
-  //       x={cx}
-  //       y={cy - 10} // Adjust positioning
-  //       textAnchor="middle"
-  //       dominantBaseline="central"
-  //       fontSize="16"
-  //       fontWeight="bold"
-  //       fill="#333"
-  //     >
-  //       {`Total: ${recruitmentData?.length}`}
-  //     </text>
-  //   );
-  // };
-  // console.log("recruitmentData==>>>",recruitmentData)
+  
   const fetchAttendance = async () => {
     try {
       // const response = await getRequest('getAllUser?departmentcode=5')
       const response = await getRequest(`${users?.role == "HR" ? "getAllUser" : "getAllUser?departmentcode=5"}`)
-      console.log("fetch attendence response ==>>>", response)
+      // console.log("fetch attendence response ==>>>", response)
       dispatch(employeeList(response.data))
     } catch (error) {
       console.log(error)
@@ -134,24 +182,88 @@ const Dashboard = () => {
     try {
       // const response = await getRequest('getAllUser?departmentcode=5')
       const response = await getRequest(`${users?.role == "HR" ? "getAllDept" : "getAllDept?departmentcode=5"}`)
-      console.log("fetch all department response ==>>>", response)
+      // console.log("fetch all department response ==>>>", response)
 
       dispatch(depatmentList(response))
     } catch (error) {
       console.log(error)
     }
   }
+   // today attendanceData
+   const todayAttPercent = async() => {
+    let today = new Date();
+    today.setDate(today.getDate());
+    let formatDate = moment(today, "MM/DD/YYYY").format("DD-MMMM-YYYY")
+    // console.log("formatDate", formatDate)
+   let  obj = {
+      empid: "All",
+      todate: formatDate,
+      fromdate: formatDate,
+    };
+    try {
+      // dispatch(fetchingEmployeeStart());
+      setTodayAttLoader(true)
+      const response = await postRequest("getAllEmployeesAttendance", obj);
+      setTodayAttData(response)
+      setTodayAttLoader(false)
+      // console.log("get detail",response);
+    } catch (error) {
+      console.error("Error in API request:", error);
+    }
+
+  }
+  // console.log("todayAttData",todayAttData)
   useEffect(() => {
     if (users) {
       TotalPresentFunc()
+      todayAttPercent()
       TotalAbsentFunc()
       TotalLeaveFunc()
       fetchAttendance()
       getAllDepartment()
       yesterdayAtt()
+      fetchLastWeekAttendance()
     }
   }, [])
+ 
+  const allEmployees = todayAttData && Object.values(todayAttData)?.flat();
 
+  const attendanceCounts = allEmployees?.reduce(
+    (acc, emp) => {
+      if (emp.attendanceData?.length > 0) { 
+        const firstEntry = emp.attendanceData[0];
+  
+        // Fixing conditions
+        if (firstEntry.entryTime && firstEntry.late?.trim().toUpperCase() === "OK") {
+          acc.onTime += 1;
+        }
+        
+        if (firstEntry.late?.trim().toUpperCase() === "LATE") {
+          acc.lateArrive += 1;
+        }
+        
+        if (firstEntry.remark?.trim().toUpperCase() === "ABSENT" && !firstEntry.entryTime) {
+          acc.Leave += 1;
+        }
+      }
+      return acc;
+    },
+    { onTime: 0, lateArrive: 0, Leave: 0 }
+  );
+  
+  // 🔥 Total Employees Count
+  const totalEmployees = allEmployees?.length;
+  
+  // 🔥 Calculate Attendance Percentage
+  const attendancePercentage = Math.round(
+    ((attendanceCounts.onTime + attendanceCounts.lateArrive) / totalEmployees) * 100
+  );
+  const attendanceData2 = [
+    { name: "On Time", value: attendanceCounts.onTime, color: "#5fb3fc" },
+    { name: "Late Arrivals", value: attendanceCounts.lateArrive, color: "#edef75" },
+    { name: "Leaves", value: attendanceCounts.Leave, color: "#f76c54" }
+  ];
+  
   return (
     <div className="flex">
       {/* <Sidebar /> */}
@@ -241,29 +353,68 @@ const Dashboard = () => {
     </div>
 
           <div className="bg-white p-4 shadow rounded-lg">
-            <h2 className="text-lg font-semibold">Daily Attendance</h2>
+            <h2 className="text-lg font-semibold">Weekly Attendance</h2>
+            {
+              isLoading  ?
+              <div className="flex justify-center items-center h-40">
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        </div> :
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={attendanceData}>
+              <BarChart data={weeklyAttData}>
                 <XAxis dataKey="day" />
                 <YAxis />
                 <Tooltip />
                 <Bar dataKey="present" fill="#4F46E5" />
-                <Bar dataKey="absent" fill="#EC4899" />
+                <Bar dataKey="absent" fill="#FF4500" />
               </BarChart>
             </ResponsiveContainer>
+            }
           </div>
 
-          <div className="bg-white p-4 shadow rounded-lg">
-            <h2 className="text-lg font-semibold">Loan Pay Received</h2>
-            <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie data={[{ name: "Loan", value: 8440 }]} dataKey="value" outerRadius={80}>
-                  <Cell fill="#4F46E5" />
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+         
+<div className="bg-white p-4 shadow rounded-lg flex flex-col items-center">
+      <h2 className="text-lg font-semibold">Attendance Rate</h2>
+    { 
+    todayAttLoader ?  <div className="flex justify-center items-center h-40">
+    <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+  </div> :
+  <>
+    <div className="text-3xl font-bold">{attendancePercentage ? attendancePercentage : 0}%</div>
+
+      <PieChart width={350} height={220} className="mt-2">
+  <Pie
+    data={attendanceData2}
+    cx="50%"
+    cy="50%"
+    outerRadius={80} 
+    fill="#8884d8"
+    dataKey="value"
+    label={false}
+    activeShape={{ stroke: "none" }}
+  >
+    {attendanceData2.map((entry, index) => (
+      <Cell key={index} fill={entry.color} />
+    ))}
+  </Pie>
+
+  <Tooltip
+    cursor={{ fill: "transparent" }} 
+    contentStyle={{ border: "none", borderRadius: "6px", backgroundColor: "rgba(120, 112, 60)", color: "#fff", padding: "2px" }} 
+  />
+</PieChart>
+
+      {/* Legend */}
+      <div className="flex space-x-4">
+  {attendanceData2.map((item, index) => (
+    <div key={index} className="flex items-center">
+      <span className="w-4 h-4 rounded-full mr-2" style={{ backgroundColor: item.color }}></span>
+      <span className="text-sm">{item.name} ({item.value})</span>
+    </div>
+  ))}
+</div>
+</>
+}
+    </div>
         </div>
         <div className=" mt-5 grid grid-cols-1 md:grid-cols-4 gap-4">
 
@@ -330,23 +481,44 @@ const Dashboard = () => {
 </div>
 
 
-          <div className="bg-white  p-4 shadow rounded-lg md:col-span-1">
+          <div className="bg-white  p-4 shadow rounded-lg md:col-span-1 ">
+            <div className="max-h-64 overflow-y-auto">
+
             <h2 className="text-lg font-semibold">Today Absent</h2>
-            <div className="max-h-64 overflow-y-auto"> {/* Added scrolling here */}
-              <ul>
-                {absentData.map((emp, index) => (
-                  <li key={index} className="flex justify-between items-center py-2 border-b">
-                    <div>
-                      <p className="font-semibold">{emp.NAME}</p>
-                      <p className="text-sm text-gray-500">Department: {emp.DEPT}</p>
-                    </div>
-                    <span className="px-2 py-1 text-sm font-semibold rounded-lg text-red-600 bg-red-100">
-                      Absent
-                    </span>
-                  </li>
-                ))}
-              </ul>
+            {absentLoader ? (
+        // 🔥 Skeleton Loader
+        <ul>
+          {Array.from({ length: 3 }).map((_, index) => (
+            <li
+              key={index}
+              className="flex justify-between items-center py-2 border-b animate-pulse"
+            >
+              <div>
+                <div className="h-4 bg-gray-300 rounded w-24 mb-1"></div>
+                <div className="h-3 bg-gray-200 rounded w-16"></div>
+              </div>
+              <div className="px-2 py-1 h-5 w-12 bg-gray-300 rounded-lg"></div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        // ✅ Actual Data
+        <ul>
+        {absentData.map((emp, index) => (
+          <li key={index} className="flex justify-between items-center py-2 border-b">
+            <div>
+              <p className="font-semibold">{emp.NAME}</p>
+              <p className="text-sm text-gray-500">Department: {emp.DEPT}</p>
             </div>
+            <span className="px-2 py-1 text-sm font-semibold rounded-lg text-red-600 bg-red-100">
+              Absent
+            </span>
+          </li>
+        ))}
+      </ul>
+      )}
+            </div>
+
           </div>
 
         </div>
