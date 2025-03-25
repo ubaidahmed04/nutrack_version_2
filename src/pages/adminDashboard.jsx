@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { depatmentList, employeeList } from "../redux/employeeSlice";
 import { getRequest, postRequest } from "../utils/APICall";
 import moment from "moment";
-import { fetchingEmployeeSuccess } from "../redux/attendanceSlice";
+import { fetchingEmployeeErorr, fetchingEmployeeStart, fetchingEmployeeSuccess } from "../redux/attendanceSlice";
+import TableSkeleton from "../components/loader/tableSkeleton";
 
 const Dashboard = () => {
   const recruitmentData = [
@@ -28,30 +29,7 @@ const Dashboard = () => {
     { day: "Sat", present: 0, absent: 0, leave: "Off" },
   ];
 
-  const employlist = [
-    { name: "Muhammad Umair", department: "IT Enable Services", yesterdayStatus: "Present" },
-    { name: "Abdul Rafay", department: "Administrator", yesterdayStatus: "Present" },
-    { name: "Ubaid Ahmed", department: "Web Development", yesterdayStatus: "Leave" },
-    { name: "Bilal Raza", department: "Mobile Development", yesterdayStatus: "Leave" },
-    { name: "Usama Khan", department: "Desktop Development", yesterdayStatus: "Absent" },
-    { name: "Gohar Ramzan", department: "HR", yesterdayStatus: "Present" },
-    { name: "Muhammad Umair", department: "IT Enable Services", yesterdayStatus: "Present" },
-    { name: "Abdul Rafay", department: "Administrator", yesterdayStatus: "Present" },
-    { name: "Ubaid Ahmed", department: "Web Development", yesterdayStatus: "Present" },
-    { name: "Bilal Raza", department: "Mobile Development", yesterdayStatus: "Absent" },
-    { name: "Usama Khan", department: "Desktop Development", yesterdayStatus: "Absent" },
-    { name: "Gohar Ramzan", department: "HR", yesterdayStatus: "Absent" },
-  ];
-  const leaveApplications = [
-    { name: "Maisha Lucy", department: "IT", status: "Absent" },
-    { name: "Zamora Peck", department: "HR", status: "Absent" },
-    { name: "Amy Aphrodite", department: "Finance", status: "Absent" },
-    { name: "Maisha Lucy", department: "Marketing", status: "Absent" },
-    { name: "Amy Aphrodite", department: "Finance", status: "Absent" },
-    { name: "Maisha Lucy", department: "Marketing", status: "Absent" },
-    { name: "Amy Aphrodite", department: "Finance", status: "Absent" },
-    { name: "Maisha Lucy", department: "Marketing", status: "Absent" },
-  ];
+  
   // data fetch
   const dispatch = useDispatch()
   const [presentCount, setPresentCount] = useState(0)
@@ -108,10 +86,12 @@ const Dashboard = () => {
       fromdate: formatDate,
     };
     try {
+      dispatch(fetchingEmployeeStart());
       const response = await postRequest("getAllEmployeesAttendance", obj);
       console.log("get detail",response);
       dispatch(fetchingEmployeeSuccess(response));
     } catch (error) {
+      dispatch(fetchingEmployeeErorr());
       console.error("Error in API request:", error);
     }
 
@@ -221,18 +201,24 @@ const Dashboard = () => {
         <div className=" mt-5 grid grid-cols-1 md:grid-cols-4 gap-4">
 
         <div className="bg-white p-4 shadow rounded-lg md:col-span-3">
-  <h2 className="text-lg font-semibold mb-2">Yesterday Status</h2>
-  <div className="max-h-64 overflow-y-auto">
-    <table className="w-full border-collapse border border-gray-200">
+    {
+      isFetching ? 
+      <div>
+      <TableSkeleton/> 
+      </div> :<>
+        <h2 className="text-lg font-semibold mb-2">Yesterday Status</h2>
+        <div className="max-h-64 overflow-y-auto">
+      
+      <table className="w-full border-collapse border border-gray-200">
       <thead>
         <tr className="bg-gray-100">
           <th className="border border-gray-300 p-2">Name</th>
           <th className="border border-gray-300 p-2">Department</th>
-          <th className="border border-gray-300 p-2">Yesterday Status</th>
+          <th className="border border-gray-300 p-2">Status</th>
         </tr>
       </thead>
       <tbody>
-        {singleEmployeeAttendance &&
+        { singleEmployeeAttendance &&
           Object.keys(singleEmployeeAttendance).map((dept) => (
             <>
               {/* Department Row */}
@@ -270,7 +256,10 @@ const Dashboard = () => {
           ))}
       </tbody>
     </table>
+
   </div>
+  </>
+    }
 </div>
 
 
