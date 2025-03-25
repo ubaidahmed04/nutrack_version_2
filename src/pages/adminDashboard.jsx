@@ -104,8 +104,8 @@ const Dashboard = () => {
     console.log("formatDate", formatDate)
    let  obj = {
       empid: "All",
-      todate: "20-March-2025",
-      fromdate: "20-March-2025",
+      todate: formatDate,
+      fromdate: formatDate,
     };
     try {
       const response = await postRequest("getAllEmployeesAttendance", obj);
