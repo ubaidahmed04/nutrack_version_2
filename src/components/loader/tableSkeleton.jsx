@@ -1,7 +1,7 @@
 const TableSkeleton = () => {
     return (
       <div className="bg-white p-4 shadow rounded-lg md:col-span-3">
-        <h2 className="text-lg font-semibold mb-2">Yesterday Status</h2>
+        <h2 className="text-lg font-semibold mb-2">Today Attendence</h2>
         <div className="max-h-64 overflow-y-auto">
           <table className="w-full border-collapse border border-gray-200">
             <thead>

@@ -48,8 +48,8 @@
 
 
 import axios from "axios";
-const URL = "https://webapi3.nubitsoft.com/";
-// const URL = "http://localhost:8000/";
+// const URL = "https://webapi3.nubitsoft.com/";
+const URL = "http://localhost:8000/";
 
 export const getRequest = async (route) => {
     const config = {

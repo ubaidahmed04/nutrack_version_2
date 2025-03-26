@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
-import { FaTachometerAlt, FaUserCheck, FaUsers, FaClipboardList, FaDollarSign, FaCog, FaQuestionCircle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { depatmentList, employeeList } from "../redux/employeeSlice";
 import { getRequest, postRequest } from "../utils/APICall";
@@ -10,16 +9,7 @@ import TableSkeleton from "../components/loader/tableSkeleton";
 
 const Dashboard = () => {
   
-  const attendanceData = [
-    { day: "Sun", present: 0, absent: 0, leave: "Off" },
-    { day: "Mon", present: 15, absent: 3, leave: 7 },
-    { day: "Tue", present: 19, absent: 5, leave: 1 },
-    { day: "Wed", present: 20, absent: 3, leave: 2 },
-    { day: "Thu", present: 21, absent: 2, leave: 2 },
-    { day: "Fri", present: 18, absent: 4, leave: 3 },
-    { day: "Sat", present: 0, absent: 0, leave: "Off" },
-  ];
-
+  
   
   // data fetch
   const dispatch = useDispatch()
@@ -27,8 +17,6 @@ const Dashboard = () => {
   const [absentCount, setAbsentCount] = useState(0)
   const [absentData, setAbsentData] = useState([])
   const [weeklyAttData, setWeeklyAttData] = useState([])
-  const [todayAttData, setTodayAttData] = useState([])
-  const [todayAttLoader, setTodayAttLoader] = useState([])
   const [isLoading, setIsLoading] = useState(true);
   const [absentLoader, setAbsentLoader] = useState(true);
   const [leaveCount, setLeaveCount] = useState(0)
@@ -36,16 +24,9 @@ const Dashboard = () => {
   const { singleEmployeeAttendance, isFetching } = useSelector(
     (state) => state.employeeAtt
   );
-  // console.log("singleEmployeeAttendance --->>>", singleEmployeeAttendance)
-  // const previousDayData = singleEmployeeAttendance
   const TotalPresentFunc = () => {
-    let count = 0
-    allEmployee?.forEach((item, index) => {
-      if (item.ENTRYTIME) {
-        count++
-      }
-      setPresentCount(count)
-    })
+    let count = allEmployee?.filter(emp => emp.ENTRYTIME).length || 0 
+    setPresentCount(count)
   }
   const TotalAbsentFunc = () => {
     setAbsentLoader(true)
@@ -56,11 +37,10 @@ const Dashboard = () => {
         absentList.push(item);
         count++
       }
-      setAbsentCount(count)
-      setAbsentData(absentList)
-      setAbsentLoader(false)
-
     })
+    setAbsentCount(count)
+    setAbsentData(absentList)
+    setAbsentLoader(false)
   }
   const TotalLeaveFunc = () => {
     let count = 0
@@ -72,86 +52,62 @@ const Dashboard = () => {
     })
   }
   const { users } = useSelector((state) => state.user || {})
-  // console.log(users)
   // yesterday attendence
-  const yesterdayAtt = async() => {
-    let yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    let formatDate = moment(yesterday, "MM/DD/YYYY").format("DD-MMMM-YYYY")
-    // console.log("formatDate", formatDate)
-   let  obj = {
-      empid: "All",
-      todate: formatDate,
-      fromdate: formatDate,
-    };
-    try {
-      dispatch(fetchingEmployeeStart());
-      const response = await postRequest("getAllEmployeesAttendance", obj);
-      // console.log("get detail",response);
-      dispatch(fetchingEmployeeSuccess(response));
-    } catch (error) {
-      dispatch(fetchingEmployeeErorr());
-      console.error("Error in API request:", error);
-    }
+  // const yesterdayAtt = async() => {
+  //   let yesterday = new Date();
+  //   yesterday.setDate(yesterday.getDate() - 1);
+  //   let formatDate = moment(yesterday, "MM/DD/YYYY").format("DD-MMMM-YYYY")
+  //   // console.log("formatDate", formatDate)
+  //  let  obj = {
+  //     empid: "All",
+  //     todate: formatDate,
+  //     fromdate: formatDate,
+  //   };
+  //   try {
+  //     dispatch(fetchingEmployeeStart());
+  //     const response = await postRequest("getAllEmployeesAttendance", obj);
+  //     // console.log("get detail",response);
+  //     dispatch(fetchingEmployeeSuccess(response));
+  //   } catch (error) {
+  //     dispatch(fetchingEmployeeErorr());
+  //     console.error("Error in API request:", error);
+  //   }
 
-  }
-  // weekly attendence
+  // }
+  // // weekly attendence
   const fetchLastWeekAttendance = async () => {
     setIsLoading(true);
     let today = new Date();
     let lastWeek = new Date();
     lastWeek.setDate(today.getDate() - 6);
-  
+    
     let fromDate = moment(lastWeek).format("DD-MMMM-YYYY");
     let toDate = moment(today).format("DD-MMMM-YYYY");
-  console.log("from date ",fromDate)
-    let obj = {
-      empid: "All",
-      todate: toDate,
-      fromdate: fromDate,
-    };
+  
+    let obj = { empid: "All", todate: toDate, fromdate: fromDate };
   
     try {
       const response = await postRequest("getAllEmployeesAttendance", obj);
-      console.log("API Response:", response);
-  
       if (response) {
-        let dayWiseData = {};
+        const dayWiseData = Object.values(response).flatMap(dept => dept || [])
+          .flatMap(record => record.attendanceData || [])
+          .reduce((acc, entry) => {
+            let dayName = moment(entry.date1, "DD-MMM-YYYY").format("dddd");
+            if (!acc[dayName]) acc[dayName] = { present: 0, absent: 0, leave: 0 };
+            acc[dayName].present += entry.remark === "present" ? 1 : 0;
+            acc[dayName].absent += entry.remark === "Absent" ? 1 : 0;
+            acc[dayName].leave += entry.leaveRemark ? 1 : 0;
+            return acc;
+          }, {});
   
-        Object.keys(response).forEach((department) => {
-          let records = response[department] || []; 
-          
-          records.forEach((record) => {
-            (record.attendanceData || []).forEach((entry) => {
-              let dayName = moment(entry.date1, "DD-MMM-YYYY").format("dddd");
-  
-              if (!dayWiseData[dayName]) {
-                dayWiseData[dayName] = { present: 0, absent: 0, leave: 0 };
-              }
-  
-              dayWiseData[dayName].present += entry.remark === "present" ? 1 : 0;
-              dayWiseData[dayName].absent += entry.remark === "Absent" ? 1 : 0;
-              dayWiseData[dayName].leave += entry.leaveRemark ? 1 : 0;
-            });
-          });
-        });
-  
-        // 🔥 Convert Object to Array for Chart.js
-        const formattedData = Object.keys(dayWiseData).map((day) => ({
-          day,
-          present: dayWiseData[day].present,
-          absent: dayWiseData[day].absent,
-        }));
-  
-        // console.log("📊 Chart Data:", formattedData);
-        setWeeklyAttData(formattedData);
+        setWeeklyAttData(Object.entries(dayWiseData).map(([day, values]) => ({ day, ...values })));
       }
     } catch (error) {
-      console.error("❌ Error fetching last week attendance:", error);
+      console.error("Error fetching attendance:", error);
     }
     setIsLoading(false);
-  };  
-  // console.log("weeklyAttData ==>>>",weeklyAttData)
+  };
+   
   // show department data 
   const departmentColors = {
     "HR": "#00BFFF",
@@ -168,9 +124,10 @@ const Dashboard = () => {
     color: departmentColors[dept] || "#CCCCCC"
   }));
   
+
+  // get all users 
   const fetchAttendance = async () => {
     try {
-      // const response = await getRequest('getAllUser?departmentcode=5')
       const response = await getRequest(`${users?.role == "HR" ? "getAllUser" : "getAllUser?departmentcode=5"}`)
       // console.log("fetch attendence response ==>>>", response)
       dispatch(employeeList(response.data))
@@ -178,6 +135,7 @@ const Dashboard = () => {
       console.log(error)
     }
   }
+  
   const getAllDepartment = async () => {
     try {
       // const response = await getRequest('getAllUser?departmentcode=5')
@@ -194,39 +152,36 @@ const Dashboard = () => {
     let today = new Date();
     today.setDate(today.getDate());
     let formatDate = moment(today, "MM/DD/YYYY").format("DD-MMMM-YYYY")
-    // console.log("formatDate", formatDate)
    let  obj = {
       empid: "All",
       todate: formatDate,
       fromdate: formatDate,
     };
     try {
-      // dispatch(fetchingEmployeeStart());
-      setTodayAttLoader(true)
+      dispatch(fetchingEmployeeStart());
       const response = await postRequest("getAllEmployeesAttendance", obj);
-      setTodayAttData(response)
-      setTodayAttLoader(false)
       // console.log("get detail",response);
+      dispatch(fetchingEmployeeSuccess(response));
     } catch (error) {
+      dispatch(fetchingEmployeeErorr());
       console.error("Error in API request:", error);
     }
 
   }
-  // console.log("todayAttData",todayAttData)
   useEffect(() => {
     if (users) {
       TotalPresentFunc()
-      todayAttPercent()
       TotalAbsentFunc()
       TotalLeaveFunc()
+      todayAttPercent()
       fetchAttendance()
-      getAllDepartment()
-      yesterdayAtt()
-      fetchLastWeekAttendance()
+      // yesterdayAtt()
+      // fetchLastWeekAttendance()
+        getAllDepartment()
     }
   }, [])
  
-  const allEmployees = todayAttData && Object.values(todayAttData)?.flat();
+  const allEmployees = singleEmployeeAttendance && Object.values(singleEmployeeAttendance)?.flat();
 
   const attendanceCounts = allEmployees?.reduce(
     (acc, emp) => {
@@ -251,17 +206,17 @@ const Dashboard = () => {
     { onTime: 0, lateArrive: 0, Leave: 0 }
   );
   
-  // 🔥 Total Employees Count
+  //  Total Employees Count
   const totalEmployees = allEmployees?.length;
   
-  // 🔥 Calculate Attendance Percentage
+  //  Calculate Attendance Percentage
   const attendancePercentage = Math.round(
-    ((attendanceCounts.onTime + attendanceCounts.lateArrive) / totalEmployees) * 100
+    ((attendanceCounts?.onTime + attendanceCounts?.lateArrive) / totalEmployees) * 100
   );
   const attendanceData2 = [
-    { name: "On Time", value: attendanceCounts.onTime, color: "#5fb3fc" },
-    { name: "Late Arrivals", value: attendanceCounts.lateArrive, color: "#edef75" },
-    { name: "Leaves", value: attendanceCounts.Leave, color: "#f76c54" }
+    { name: "On Time", value: attendanceCounts?.onTime, color: "#5fb3fc" },
+    { name: "Late Arrivals", value: attendanceCounts?.lateArrive, color: "#edef75" },
+    { name: "Leaves", value: attendanceCounts?.Leave, color: "#f76c54" }
   ];
   
   return (
@@ -295,7 +250,7 @@ const Dashboard = () => {
 
 
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         <div className="bg-white p-6 shadow rounded-lg">
       <h2 className="text-lg font-semibold mb-4">Department Overview</h2>
       {isFetching ? (
@@ -352,7 +307,7 @@ const Dashboard = () => {
 
     </div>
 
-          <div className="bg-white p-4 shadow rounded-lg">
+          {/* <div className="bg-white p-4 shadow rounded-lg">
             <h2 className="text-lg font-semibold">Weekly Attendance</h2>
             {
               isLoading  ?
@@ -369,13 +324,13 @@ const Dashboard = () => {
               </BarChart>
             </ResponsiveContainer>
             }
-          </div>
+          </div> */}
 
          
-<div className="bg-white p-4 shadow rounded-lg flex flex-col items-center">
+<div className="bg-white p-4 shadow rounded-lg flex flex-col items-center h-full">
       <h2 className="text-lg font-semibold">Attendance Rate</h2>
     { 
-    todayAttLoader ?  <div className="flex justify-center items-center h-40">
+    isFetching ?  <div className="flex justify-center items-center h-40">
     <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
   </div> :
   <>
@@ -424,7 +379,7 @@ const Dashboard = () => {
       <div>
       <TableSkeleton/> 
       </div> :<>
-        <h2 className="text-lg font-semibold mb-2">Yesterday Status</h2>
+        <h2 className="text-lg font-semibold mb-2">Today Attendence</h2>
         <div className="max-h-64 overflow-y-auto">
       
       <table className="w-full border-collapse border border-gray-200">

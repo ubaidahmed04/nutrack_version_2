@@ -53,6 +53,12 @@ const Navbar = ({ setName }) => {
           icon: <ClipboardDocumentListIcon className="w-5 h-5" />,
           link: "/todayAttendence"
         },
+          {
+          key: "Department",
+          label: "Department",
+          icon: <ClipboardDocumentIcon className="w-5 h-5" />,
+          link: "department"
+        },
         // {
         //   key: "MonthlyReport",
         //   label: "Monthly Report",
