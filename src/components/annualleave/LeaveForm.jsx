@@ -4,10 +4,10 @@ const { TextArea } = Input;
 
 const LeaveForm = () => {
     const onChange = (value) => {
-        console.log(`selected ${value}`);
+        // console.log(`selected ${value}`);
       };
       const onSearch = (value) => {
-        console.log('search:', value);
+        // console.log('search:', value);
       };
   return (
     <span className='flex md:justify-start  flex-wrap gap-4 items-center px-4 py-4'>

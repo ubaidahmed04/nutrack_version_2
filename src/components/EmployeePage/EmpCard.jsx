@@ -5,7 +5,7 @@ import EditEmpForm from './EditEmpForm';
 const EmpCard = () => {
   const [editModal, setEditModal] = useState(false)
     const confirm = (e) => {
-        console.log(e);
+        // console.log(e);
         // message.success('Click on edit');
         setEditModal(true)
 

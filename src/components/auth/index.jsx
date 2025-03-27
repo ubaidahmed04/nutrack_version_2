@@ -17,7 +17,7 @@ const Login = () => {
 
   const urlParams = new URLSearchParams(window.location.href.split("?")[1]);
   const token = urlParams.get("token");
-  console.log(token)
+  // console.log(token)
   useEffect(() => {
     const verifyToken = async () => {
       if (urlParams.size) {
@@ -29,11 +29,11 @@ const Login = () => {
               "Content-Type": "application/json",
             },
           });
-          console.log(response)
+          // console.log(response)
           if (response.data.status) {
-            console.log(response)
+            // console.log(response)
             if (response.data.data.role === "Client") {
-              console.log('ya client role ha', response);
+              // console.log('ya client role ha', response);
 
               const obj = {
                 email: "wk@gmail.com",
@@ -42,7 +42,7 @@ const Login = () => {
               dispatch(LoginSuccess(response.data.data));
               navigate("/");
             } else if (response.data.data.role === "HR") {
-              console.log(response)
+              // console.log(response)
               const obj = {
                 email: "hr@gmail.com",
                 password: "101171",
@@ -134,7 +134,7 @@ const Login = () => {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-2 top-9 text-gray-600"
                   >
-                    {showPassword ? "👁" : "🙈"  }
+                    {showPassword ? "👁" : "🙈 "  }
                   </button>
                   <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
                 </div>

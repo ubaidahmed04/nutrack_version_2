@@ -42,7 +42,7 @@ const DepartForm = ({ visible, onClose }) => {
   const [images, setImages] = useState([]);
 
   const handleSubmit = (values, { resetForm }) => {
-    console.log(values);
+    // console.log(values);
     onClose()
     // resetForm()
   };
