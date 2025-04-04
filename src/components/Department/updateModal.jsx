@@ -7,7 +7,6 @@ import { Modal } from "antd";
 import { postRequest, updateRequest } from "../../utils/APICall";
 import { updateDept } from "../../redux/deptSlice";
 import { useDispatch } from "react-redux";
-// const [timeIn, setTimeIn] = useState('12:00 AM');
 const UpdateDepartForm = ({ visible, onClose, singleData }) => {
     console.log("singleData-->>>>>",singleData)
     const dispatch = useDispatch()
@@ -21,7 +20,6 @@ const UpdateDepartForm = ({ visible, onClose, singleData }) => {
       useEffect(() => {
         if (singleData) {
             setformData({
-            // vdepartmentid : singleData.CODE || "",     
             vdeptitle: singleData?.TITLE || "",
             vtimein: singleData?.TIMEIN || "",
             vtimeout: singleData?.TIMEOUT || "",
@@ -40,32 +38,29 @@ const UpdateDepartForm = ({ visible, onClose, singleData }) => {
 
   const handleSubmit = async (values, { resetForm }) => {
     function addGracePeriod(timeIn, gracePeriodMinutes) {
-      // Parse the timeIn into a Date object (you can use a default date)
       const [hours, minutes] = timeIn.split(':').map(Number);
       const timeInDate = new Date();
-      timeInDate.setHours(hours, minutes, 0); // Set hours and minutes based on the input
+      timeInDate.setHours(hours, minutes, 0); 
     
-      // Add the grace period (15 minutes) to the timeInDate
       timeInDate.setMinutes(timeInDate.getMinutes() + gracePeriodMinutes);
     
-      // Get the new time after adding grace period
       const newTime = timeInDate.toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit',
-        hour12: true, // if you need 12-hour format
+        hour12: true, 
       });
     
       return newTime;
     }
     try {
-      console.log("time out ",values)
+    //   console.log("time out ",values)
       let gracetime = addGracePeriod(values.vtimein, 15)
       const obj = {
         ...values,
         vdepartmentid: singleData?.CODE, 
         vgracetimeperiod: gracetime ,
       }
-      console.log("updated",obj)
+    //   console.log("updated",obj)
       const response =await updateRequest("updateDept",obj)
       console.log("response ===>>>",response)
       if(response.returnValue){
@@ -78,9 +73,8 @@ const UpdateDepartForm = ({ visible, onClose, singleData }) => {
       console.error("Error adding department:", error);
       alert("Failed to add department");
     }
-    console.log(values)
+    // console.log(values)
   };
-  console.log("formData-->>>>>",formData)
   return (
     <Modal
       title="Update Department"

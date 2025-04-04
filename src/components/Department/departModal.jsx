@@ -26,7 +26,7 @@ const DepartForm = ({ visible, onClose }) => {
   };
 
   const handleSubmit = async (values, { resetForm }) => {
-    console.log("values ", values )
+    // console.log("values ", values )
     function addGracePeriod(timeIn, gracePeriodMinutes) {
       // Parse the timeIn into a Date object (you can use a default date)
       const [hours, minutes] = timeIn.split(':').map(Number);
@@ -53,7 +53,7 @@ const DepartForm = ({ visible, onClose }) => {
         ...values,
         vgracetimeperiod: time,
       }
-      console.log("updated",obj)
+      // console.log("updated",obj)
       const response =await postRequest("addDept",obj)
       console.log("response ===>>>",response)
       if(response.returnValue){

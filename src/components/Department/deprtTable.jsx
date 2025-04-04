@@ -125,11 +125,11 @@ const DepartTable = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [singleDeptData, setSingleDeptData] = useState([]);
   const { allDept, isLoader } = useSelector((state) => state.dept);
-  console.log("redux data", allDept);
+  // console.log("redux data", allDept);
   const dispatch = useDispatch();
   const showUpdateModal = async (id) => {
     setIsUpdateModalOpen(true);
-    console.log("id-->>>>", id);
+    // console.log("id-->>>>", id);
     const res = await getRequest(`getSingleDepartment/${id}`);
     console.log("Single Department fetch  ", res);
     if (res?.data?.length > 0) {
