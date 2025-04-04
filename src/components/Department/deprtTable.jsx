@@ -103,13 +103,11 @@
 
 import React, { useState, useEffect } from "react";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
-import axios from "axios";
 import UpdateDepartForm from "./updateModal";
 import { getRequest } from "../../utils/APICall";
 import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllDeptStart, getAllDeptSuccess } from "../../redux/deptSlice";
-import Loader from "../loader";
 
 const DepartTable = () => {
   const T_Head = [
@@ -179,9 +177,9 @@ const DepartTable = () => {
              {T_Head.map((_, colIndex) => (
                <td
                  key={colIndex}
-                 className="p-4 border-b border-gray-50 animate-pulse"
+                 className="p-4 border-b border-gray-100 animate-pulse"
                >
-                 <div className="h-4 bg-gray-100 rounded w-full"></div>
+                 <div className="h-4 bg-gray-300 rounded w-full"></div>
                </td>
              ))}
            </tr>
