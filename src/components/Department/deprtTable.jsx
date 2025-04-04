@@ -187,7 +187,7 @@ const DepartTable = () => {
            </tr>
          ))
           ) : (
-           allDept.length > 0 &&  allDept?.map((item, index) => (
+           allDept?.length > 0 &&  allDept?.map((item, index) => (
               <tr className="even:bg-blue-50 " key={index}>
                 <td className="p-4 text-sm text-black">{item.CODE}</td>
                 <td className="p-4 text-sm text-black">{item.TITLE}</td>
