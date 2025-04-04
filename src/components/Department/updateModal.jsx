@@ -1,12 +1,35 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import InputFields from "../../utils/UserInput";
 import { Modal } from "antd";
-import { postRequest } from "../../utils/APICall";
+import { postRequest, updateRequest } from "../../utils/APICall";
+import { updateDept } from "../../redux/deptSlice";
+import { useDispatch } from "react-redux";
 // const [timeIn, setTimeIn] = useState('12:00 AM');
-const DepartForm = ({ visible, onClose }) => {
+const UpdateDepartForm = ({ visible, onClose, singleData }) => {
+    console.log("singleData-->>>>>",singleData)
+    const dispatch = useDispatch()
+    const [formData, setformData] = useState({
+        vdeptitle: "",
+        vtimein: "",
+        vtimeout: "",
+        vsickleaves: "",
+        vcasualleaves: "",
+      });
+      useEffect(() => {
+        if (singleData) {
+            setformData({
+            // vdepartmentid : singleData.CODE || "",     
+            vdeptitle: singleData?.TITLE || "",
+            vtimein: singleData?.TIMEIN || "",
+            vtimeout: singleData?.TIMEOUT || "",
+            vsickleaves: singleData?.SICKLEAVES   || "",
+            vcasualleaves: singleData?.CASUALLEAVES || "",
+          });
+        }
+      }, [singleData]);
   const validationSchema = Yup.object().shape({
     vdeptitle: Yup.string().required("Title is required"),
     vtimein: Yup.string().required("Time In is required"),
@@ -15,18 +38,7 @@ const DepartForm = ({ visible, onClose }) => {
     vcasualleaves: Yup.number().required("Casual Leave is required"),
   });
 
-  const initialValues = {
-    vdeptitle: "",
-    vtimein: "",
-    vtimeout: "",
-    vsickleaves: "",
-    vcasualleaves: "",
-    
-
-  };
-
   const handleSubmit = async (values, { resetForm }) => {
-    console.log("values ", values )
     function addGracePeriod(timeIn, gracePeriodMinutes) {
       // Parse the timeIn into a Date object (you can use a default date)
       const [hours, minutes] = timeIn.split(':').map(Number);
@@ -46,20 +58,21 @@ const DepartForm = ({ visible, onClose }) => {
       return newTime;
     }
     try {
-
-     let time =  addGracePeriod(values.vtimein, 15)
-    //  console.log("grace Time ", time )
+      console.log("time out ",values)
+      let gracetime = addGracePeriod(values.vtimein, 15)
       const obj = {
         ...values,
-        vgracetimeperiod: time,
+        vdepartmentid: singleData?.CODE, 
+        vgracetimeperiod: gracetime ,
       }
       console.log("updated",obj)
-      const response =await postRequest("addDept",obj)
+      const response =await updateRequest("updateDept",obj)
       console.log("response ===>>>",response)
       if(response.returnValue){
-        onClose(); 
-        resetForm();
-        alert("Department added successfully");
+          dispatch(updateDept(response?.data[0]));
+          alert("Department UPdated successfully");
+          resetForm();
+          onClose(); 
       }
     } catch (error) {
       console.error("Error adding department:", error);
@@ -67,18 +80,19 @@ const DepartForm = ({ visible, onClose }) => {
     }
     console.log(values)
   };
-
+  console.log("formData-->>>>>",formData)
   return (
     <Modal
-      title="Add Department"
+      title="Update Department"
       open={visible}
       onCancel={onClose}
       footer={null}
     >
       <Formik
-        initialValues={initialValues}
+        initialValues={formData}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
+        enableReinitialize={true}
       >
         {() => (
           <Form>
@@ -116,7 +130,7 @@ const DepartForm = ({ visible, onClose }) => {
                 type="submit"
                 className="mt-6 flex justify-center items-center mx-auto w-full max-h-10 bg-blue-500 text-white px-4 py-2 rounded"
               >
-                Submit
+                Update
               </button>
             </span>
           </Form>
@@ -126,4 +140,4 @@ const DepartForm = ({ visible, onClose }) => {
   );
 };
 
-export default DepartForm;
+export default UpdateDepartForm;

@@ -48,8 +48,8 @@
    
 
 import axios from "axios";
-const URL = "https://webapi3.nubitsoft.com/";
-// const URL = "http://localhost:8000/";
+// const URL = "https://webapi3.nubitsoft.com/";
+const URL = "http://localhost:8000/";
 
 export const getRequest = async (route) => {
     const config = {
@@ -81,4 +81,20 @@ export const postRequest = async (route,data) => {
   } catch(err) {
     return err.response.data
   }
+};
+export const updateRequest = async (route,data) => {
+  const config = {
+    url: URL + route,
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify(data),
+};
+try {
+  const res = await axios.request(config);
+  return res.data
+} catch(err) {
+  return err.response.data
+}
 };

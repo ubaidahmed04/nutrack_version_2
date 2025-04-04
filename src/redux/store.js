@@ -7,6 +7,8 @@ import employerAttendanceSlice from './allAttendanceSlice'
 import employeeDataSlice from './employeeData'
 import loginSlice from './userSlice'
 import setDatesSlice from './setDates'
+import  deptSlice  from './deptSlice'
+
 const loginPersistConfig = {
   key: 'login',
   version: 1,
@@ -28,6 +30,7 @@ const rootReducer = combineReducers({
   employeeAtt:employeeAttendanceSlice,
   employerAtt:employerAttendanceSlice,
   employee:employeeDataSlice,
+  dept:deptSlice,
 })
 const store = configureStore({
     reducer: rootReducer
